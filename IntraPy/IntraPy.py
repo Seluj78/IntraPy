@@ -4,6 +4,7 @@ import requests
 
 from IntraPy.config import APP_UID, APP_SECRET
 
+
 def api_request_new_token(uid: str, secret: str) -> str:
     d = {'grant_type': 'client_credentials',
          'client_id': uid, 'client_secret': secret}

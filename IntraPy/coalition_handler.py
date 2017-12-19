@@ -5,10 +5,10 @@ from typing import List
 from IntraPy import IntraPy
 
 COALITIONS = [
-    (1, 'FEDERATION', 'the-federation', 'The Federation'),
-    (2, 'ALLIANCE', 'the-alliance', 'The Alliance'),
-    (3, 'ASSEMBLY', 'the-assembly', 'The Assembly'),
-    (4, 'ORDER', 'the-order', 'The Order')
+    (0, 'FEDERATION', 'the-federation', 'The Federation'),
+    (1, 'ALLIANCE', 'the-alliance', 'The Alliance'),
+    (2, 'ASSEMBLY', 'the-assembly', 'The Assembly'),
+    (3, 'ORDER', 'the-order', 'The Order')
 ]
 
 
