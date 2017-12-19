@@ -102,3 +102,5 @@ ENV/
 
 # Custom
 .idea/
+.app_token
+settings.ini
