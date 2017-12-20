@@ -12,45 +12,45 @@ COALITIONS = [
 ]
 
 
-def coalition_get_score(coalition: int, intrapi_token: str) -> int:
-    response = IntraPy.api_get(intrapi_token, "/v2/blocs/1", "GET")
+def coalition_get_score(coalition: int, app_token: str) -> int:
+    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     return ret['coalitions'][coalition]['score']
 
 
-def coalitions_get_scores(intrapi_token: str) -> List[int]:
+def coalitions_get_scores(app_token: str) -> List[int]:
     scores = []
-    response = IntraPy.api_get(intrapi_token, "/v2/blocs/1", "GET")
+    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     for coa in COALITIONS:
         scores.append(ret['coalitions'][coa[0]]['score'])
     return scores
 
 
-def coalition_get_name(coalition: int, intrapi_token: str) -> str:
-    response = IntraPy.api_get(intrapi_token, "/v2/blocs/1", "GET")
+def coalition_get_name(coalition: int, app_token: str) -> str:
+    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     return ret['coalitions'][coalition - 1]['name']
 
 
-def coalitions_get_names(intrapi_token: str) -> List[str]:
+def coalitions_get_names(app_token: str) -> List[str]:
     names = []
-    response = IntraPy.api_get(intrapi_token, "/v2/blocs/1", "GET")
+    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     for coa in COALITIONS:
         names.append(ret['coalitions'][coa[0]]['name'])
     return names
 
 
-def coalition_get_slug(coalition: int, intrapi_token: str) -> str:
-    response = IntraPy.api_get(intrapi_token, "/v2/blocs/1", "GET")
+def coalition_get_slug(coalition: int, app_token: str) -> str:
+    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     return ret['coalitions'][coalition - 1]['slug']
 
 
-def coalitions_get_slugs(intrapi_token: str) -> List[int]:
+def coalitions_get_slugs(app_token: str) -> List[int]:
     slugs = []
-    response = IntraPy.api_get(intrapi_token, "/v2/blocs/1", "GET")
+    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     for coa in COALITIONS:
         slugs.append(ret['coalitions'][coa[0]]['slug'])
