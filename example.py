@@ -1,9 +1,6 @@
-from IntraPy.config import APP_UID, APP_SECRET
+from IntraPy import IntraPy
+from IntraPy import coalition_handler
 
-from IntraPy.IntraPy import init
+app_token = IntraPy.init()
 
-from IntraPy.coalition_handler import *
-
-app_token = init()
-
-print(coalitions_get_scores(app_token))
+print(coalition_handler.coalitions_get_scores(app_token))
