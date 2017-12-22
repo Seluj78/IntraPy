@@ -5,29 +5,14 @@
 A Python Library to use easily the 42 API
 
 ### Installation
-This python Library uses `python-decouple` and `requests`. If you don't have 
-them installed or don't know if they are installed, please run `pip install -r requirements.txt`
 
-This module isn't available on `pip` yet. To install it, you will need to 
-clone it 
+This module is available on `pip` : 
+```pip install IntraPy```
+
+Else you can just clone it, install the requirements with `pip install -r requirements.txt` and use it as is
 
 ### Usage
-To use this module, you will need to create a `settings.ini` file in the root
- directory of your project containing the `UID` and `SECRET` provided by 42's
-  API like so:
-
-```
-[settings]
-APP_UID=XXX
-APP_SECRET=XXX
-```
-
-This `settings.ini` file will be read by the init() function when called and,
- if the file `.app_token` doesn't exist, it will create it and fill it with 
- the app_token given by the API through `https://api.intra.42.fr/oauth/token`
-
-For more information, See the [wiki pages](https://github.com/Seluj78/IntraPy/wiki)
-
+See the [wiki pages](https://github.com/Seluj78/IntraPy/wiki)
 
 ### Contributing [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
