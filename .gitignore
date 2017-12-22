@@ -105,3 +105,4 @@ ENV/
 .app_token
 settings.ini
 MANIFEST
+example.py
