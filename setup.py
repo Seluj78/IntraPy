@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'IntraPy',
   packages = ['IntraPy'],
-  version = '0.1.0',
+  version = '0.1.1',
   description = 'A Python Library to use easily the 42 API',
   author = 'Jules Lasne',
   author_email = 'jlasne@student.42.fr',
