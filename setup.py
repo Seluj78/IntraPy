@@ -7,7 +7,7 @@ setup(
   author = 'Jules Lasne',
   author_email = 'jlasne@student.42.fr',
   url = 'https://github.com/seluj78/IntraPy',
-  download_url = 'https://github.com/seluj78/IntraPy/archive/0.1.0.tar.gz',
+  download_url = 'https://github.com/seluj78/IntraPy/archive/0.1.1.tar.gz',
   keywords = ['42', 'API', 'python'],
   classifiers = [],
 )
