@@ -2,10 +2,10 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ### Description
-A python module to help make python apps/bots using the 42 API
+A Python Library to use easily the 42 API
 
 ### Installation
-This python module uses `python-decouple` and `requests`. If you don't have 
+This python Library uses `python-decouple` and `requests`. If you don't have 
 them installed or don't know if they are installed, please run `pip install -r requirements.txt`
 
 This module isn't available on `pip` yet. To install it, you will need to 
