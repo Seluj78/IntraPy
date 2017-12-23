@@ -37,6 +37,6 @@ def get_accreditation_by_id(app_token: str, accreditation_id: int):
     response = IntraPy.api_get(app_token, "/v2/accreditations/" +
                                str(accreditation_id), "GET")
     ret = json.loads(response.content)
-    print(ret)
+    return ret
 
 # TODO: Add POST PATCH PUT DELETE api endpoint here
