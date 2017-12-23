@@ -3,7 +3,7 @@ import json
 from IntraPy import IntraPy
 
 
-def get_all_accreditations(app_token: str,):
+def get_all_accreditations(app_token: str):
     accreditations = []
     page_number = 1
     while page_number <= 10:  # Warning: This number needs to be changed if
