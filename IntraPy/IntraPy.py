@@ -19,7 +19,7 @@
 import os
 import requests
 from typing import Union
-from IntraPy.config import APP_UID, APP_SECRET
+from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE
 
 
 def api_request_new_token(uid: str, secret: str) -> str:
@@ -28,7 +28,7 @@ def api_request_new_token(uid: str, secret: str) -> str:
     r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
     print("New access token requested")
     print(r.json()['access_token'])
-    with open(".app_token", "w") as file:
+    with open(TOKEN_FILE, "w") as file:
         file.write(r.json()['access_token'])
     return r.json()['access_token']
 
@@ -46,8 +46,8 @@ def api_get(app_token: Union[str, None], uri: str, methods="GET"):
     return r
 
 
-def test_token(filename: str):
-    with open(filename, 'r') as file:
+def test_token():
+    with open(TOKEN_FILE, 'r') as file:
         app_token = file.readline()
     h = {'Authorization': 'Bearer ' + app_token}
     r = requests.request("GET", "https://api.intra.42.fr" +
@@ -60,31 +60,30 @@ def test_token(filename: str):
     return True
 
 
-def get_token_from_file(filename: str):
-    with open(filename, 'r+') as file:
+def get_token_from_file():
+    with open(TOKEN_FILE, 'r+') as file:
         return file.readline()
 
 
 def check_app_token():
-    if os.path.exists('.app_token'):
-        if os.stat(".app_token").st_size != 0:
-            if test_token(".app_token"):
-                app_token = get_token_from_file(".app_token")
+    if os.path.exists(TOKEN_FILE):
+        if os.stat(TOKEN_FILE).st_size != 0:
+            if test_token():
+                app_token = get_token_from_file()
             else:
                 app_token = api_request_new_token(APP_UID, APP_SECRET)
         else:
             app_token = api_request_new_token(APP_UID, APP_SECRET)
     else:
-        open('.app_token', 'a').close()
+        open(TOKEN_FILE, 'a').close()
         app_token = api_request_new_token(APP_UID, APP_SECRET)
-    with open(".app_token", "w") as file:
+    with open(TOKEN_FILE, "w") as file:
         file.write(str(app_token))
     return app_token
 
 
 def init() -> str:
-    if not (APP_SECRET and APP_UID):
-        print('42\'s variables (App secret, App UID, or both) are'
-              ' not set either in your environment variables or in the settings.ini file.')
+    if not (APP_SECRET and APP_UID and TOKEN_FILE):
+        print("42\'s variables (App secret, App UID, and the token file or both) are not set either in your environment variables or in the settings.ini file.")
         exit(EnvironmentError)
     return check_app_token()
