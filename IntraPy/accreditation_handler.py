@@ -20,11 +20,9 @@ def get_all_accreditations(app_token: str,):
     return accreditations
 
 
-def get_accreditation_page(app_token: str, page_number: int):  # TODO: Add page size as variable
+def get_accreditation_page_number_and_size(app_token: str, page_number: int, page_size: int):
     accreditations = []
-    response = IntraPy.api_get(app_token, "/v2/accreditations?page[size]=100"
-                                          "&page[number]=" + str(page_number),
-                               "GET")
+    response = IntraPy.api_get(app_token, "/v2/accreditations?page[size]=" + str(page_size) + "&page[number]=" + str(page_number), "GET")
     ret = json.loads(response.content)
     i = 0
     while i < len(ret):
