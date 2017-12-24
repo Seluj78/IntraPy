@@ -53,5 +53,3 @@ def get_accreditation_by_id(app_token: str, accreditation_id: int):
                                str(accreditation_id), "GET")
     ret = json.loads(response.content)
     return ret
-
-# TODO: Add POST PATCH PUT DELETE api endpoint here

@@ -266,8 +266,3 @@ def get_achievements_page_number_and_size_campus(app_token: str, page_number: in
         achievements.append(ret[i])
         i += 1
     return achievements
-
-
-# TODO: Multiple sorts, filter and ranges
-# TODO: get_achievements_page_number_and_size with filter, sort, ranges
-# TODO: GET /v2/titles/:title_id/achievements

@@ -32,7 +32,6 @@ def coalition_update_local_list(coalition_id: int, app_token: str,):
     for user in users:
         response = IntraPy.api_get(app_token, "/v2/users/{}".format(user), "GET")
         ret = json.loads(response.content)
-        # TODO: Get all the info on the user
         print(ret['login'])
         print(ret['email'])
         print(ret['phone'])
