@@ -1,5 +1,5 @@
 '''
-    A python module to help make python apps/bots using the 42 API
+    A python Library to help make python apps/bots using the 42 API
     Copyright (C) 2017-2018  Jules LASNE jlasne@student.42.fr
 
     This program is free software: you can redistribute it and/or modify
