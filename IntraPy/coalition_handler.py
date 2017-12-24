@@ -28,7 +28,7 @@ COALITIONS = [
 ]
 
 
-def coalition_get_score(coalition: int, app_token: str) -> int:
+def coalition_get_score(app_token: str, coalition: int) -> int:
     response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     return ret['coalitions'][coalition]['score']
@@ -43,7 +43,7 @@ def coalitions_get_scores(app_token: str) -> List[int]:
     return scores
 
 
-def coalition_get_name(coalition: int, app_token: str) -> str:
+def coalition_get_name(app_token: str, coalition: int) -> str:
     response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     return ret['coalitions'][coalition - 1]['name']
@@ -58,7 +58,7 @@ def coalitions_get_names(app_token: str) -> List[str]:
     return names
 
 
-def coalition_get_slug(coalition: int, app_token: str) -> str:
+def coalition_get_slug(app_token: str, coalition: int) -> str:
     response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
     ret = json.loads(response.content)
     return ret['coalitions'][coalition - 1]['slug']

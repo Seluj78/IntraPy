@@ -20,7 +20,7 @@ import json
 from IntraPy import IntraPy
 
 
-def coalition_update_local_list(coalition_id: int, app_token: str,):
+def coalition_update_local_list(app_token: str, coalition_id: int):
     users = []
     page_number = 1
     while page_number <= 10:
