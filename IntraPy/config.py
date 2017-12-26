@@ -1,4 +1,4 @@
-'''
+"""
     A python Library to help make python apps/bots using the 42 API
     Copyright (C) 2017-2018  Jules LASNE jlasne@student.42.fr
 
@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 
 from decouple import config
 
