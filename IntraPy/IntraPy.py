@@ -50,8 +50,9 @@ def test_token():
     with open(TOKEN_FILE, 'r') as file:
         app_token = file.readline()
     h = {'Authorization': 'Bearer ' + app_token}
-    r = requests.request("GET", "https://api.intra.42.fr" +
-                         "/v2/accreditations?page[size]=1", headers=h, allow_redirects=False)
+    r = requests.request("GET", "https://api.intra.42.fr" + "/v2/accreditations"
+                                                            "?page[size]=1",
+                         headers=h,allow_redirects=False)
     try:
         if r.json()['error'] == "Not authorized":
             return False
@@ -84,6 +85,8 @@ def check_app_token():
 
 def init() -> str:
     if not (APP_SECRET and APP_UID and TOKEN_FILE):
-        print("42\'s variables (App secret, App UID, and the token file or both) are not set either in your environment variables or in the settings.ini file.")
+        print("42\'s variables (App secret, App UID, and the token file or "
+              "both) are not set either in your environment variables or in "
+              "the settings.ini file.")
         exit(EnvironmentError)
     return check_app_token()

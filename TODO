@@ -4,3 +4,6 @@ achievement_handler:
     get_achievements_page_number_and_size with filter, sort, ranges
     GET /v2/titles/:title_id/achievements
     Handle reverse sorts (-tier for example)
+
+Add the info token endpoint
+Automated tests
