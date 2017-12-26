@@ -2,7 +2,6 @@ achievement_handler:
     Add page_size and page_number options on filter and range and sort options
     Multiple sorts, filter and ranges
     get_achievements_page_number_and_size with filter, sort, ranges
-    GET /v2/titles/:title_id/achievements
     Handle reverse sorts (-tier for example)
 
 Add the info token endpoint
