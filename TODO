@@ -3,6 +3,7 @@ achievement_handler:
     Multiple sorts, filter and ranges
     get_achievements_page_number_and_size with filter, sort, ranges
     Handle reverse sorts (-tier for example)
+Cleanup of wiki for clearer navigation and same for .py files
 
 Add the info token endpoint
 Automated tests

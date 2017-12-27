@@ -17,7 +17,6 @@
 """
 
 import json
-from IntraPy import IntraPy
 from IntraPy.IntraPy import IntraPy
 
 
@@ -25,8 +24,8 @@ class Titles(IntraPy):
     def __init__(self):
         super().__init__()
 
-    def get_achievements_from_title(self, title_id: int):
-        response = IntraPy.IntraPy.api_get(self, "/v2/titles/" + str(title_id)
-                                           + "/achievements", "GET")
+    def get_all_achievements(self, title_id: int):
+        response = self.api_get("/v2/titles/" + str(title_id)
+                                + "/achievements", "GET")
         ret = json.loads(response.content)
         return ret
