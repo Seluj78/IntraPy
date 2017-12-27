@@ -17,76 +17,79 @@
 """
 
 import os
+import sys
 import requests
-from typing import Union
 from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE
 
 
-def api_request_new_token(uid: str, secret: str) -> str:
-    d = {'grant_type': 'client_credentials',
-         'client_id': uid, 'client_secret': secret}
-    r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
-    print("New access token requested")
-    print(r.json()['access_token'])
-    with open(TOKEN_FILE, "w") as file:
-        file.write(r.json()['access_token'])
-    return r.json()['access_token']
+class IntraPy:
+    """
+    This will be the main class for IntraPy
+    """
 
+    def __init__(self):
+        if not (APP_SECRET and APP_UID and TOKEN_FILE):
+            print("42\'s variables (App secret, App UID, and the token file "
+                  "or both) are not set either in your environment variables or"
+                  " in the settings.ini file.")
+            sys.exit(EnvironmentError)
+        self.app_secret = APP_SECRET
+        self.app_uid = APP_UID
+        self.token_file = TOKEN_FILE
+        self.app_token = IntraPy.check_app_token(self)
 
-def api_get(app_token: Union[str, None], uri: str, methods="GET"):
-    h = {'Authorization': 'Bearer ' + app_token}
-    r = requests.request(methods, "https://api.intra.42.fr" +
-                         uri, headers=h, allow_redirects=False)
-    try:
-        if r.json()['error'] == "Not authorized":
-            app_token = check_app_token()
-            return api_get(app_token, uri, methods)
-    except:
-        pass
-    return r
+    def api_request_new_token(self) -> str:
+        d = {'grant_type': 'client_credentials',
+             'client_id': self.app_uid, 'client_secret': self.app_secret}
+        r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
+        print("New access token requested")
+        print(r.json()['access_token'])
+        with open(self.token_file, "w") as file:
+            file.write(r.json()['access_token'])
+        return r.json()['access_token']
 
+    def test_token(self):
+        self.app_token = IntraPy.get_token_from_file(self)
+        h = {'Authorization': 'Bearer ' + self.app_token}
+        r = requests.request("GET",
+                             "https://api.intra.42.fr" + "/v2/accreditations"
+                                                         "?page[size]=1",
+                             headers=h, allow_redirects=False)
+        try:
+            if r.json()['error'] == "Not authorized":
+                return False
+        except:
+            pass
+        return True
 
-def test_token():
-    with open(TOKEN_FILE, 'r') as file:
-        app_token = file.readline()
-    h = {'Authorization': 'Bearer ' + app_token}
-    r = requests.request("GET", "https://api.intra.42.fr" + "/v2/accreditations"
-                                                            "?page[size]=1",
-                         headers=h,allow_redirects=False)
-    try:
-        if r.json()['error'] == "Not authorized":
-            return False
-    except:
-        pass
-    return True
+    def get_token_from_file(self):
+        with open(self.token_file, 'r+') as file:
+            return file.readline()
 
-
-def get_token_from_file():
-    with open(TOKEN_FILE, 'r+') as file:
-        return file.readline()
-
-
-def check_app_token():
-    if os.path.exists(TOKEN_FILE):
-        if os.stat(TOKEN_FILE).st_size != 0:
-            if test_token():
-                app_token = get_token_from_file()
+    def check_app_token(self):
+        if os.path.exists(TOKEN_FILE):
+            if os.stat(TOKEN_FILE).st_size != 0:
+                if IntraPy.test_token(self):
+                    self.app_token = IntraPy.get_token_from_file(self)
+                else:
+                    self.app_token = IntraPy.api_request_new_token(self)
             else:
-                app_token = api_request_new_token(APP_UID, APP_SECRET)
+                self.app_token = IntraPy.api_request_new_token(self)
         else:
-            app_token = api_request_new_token(APP_UID, APP_SECRET)
-    else:
-        open(TOKEN_FILE, 'a').close()
-        app_token = api_request_new_token(APP_UID, APP_SECRET)
-    with open(TOKEN_FILE, "w") as file:
-        file.write(str(app_token))
-    return app_token
+            open(self.token_file, 'a').close()
+            self.app_token = IntraPy.api_request_new_token(self)
+        with open(self.token_file, "w") as file:
+            file.write(str(self.app_token))
+        return self.app_token
 
-
-def init() -> str:
-    if not (APP_SECRET and APP_UID and TOKEN_FILE):
-        print("42\'s variables (App secret, App UID, and the token file or "
-              "both) are not set either in your environment variables or in "
-              "the settings.ini file.")
-        exit(EnvironmentError)
-    return check_app_token()
+    def api_get(self, uri: str, methods="GET"):
+        h = {'Authorization': 'Bearer ' + self.app_token}
+        r = requests.request(methods, "https://api.intra.42.fr" +
+                             uri, headers=h, allow_redirects=False)
+        try:
+            if r.json()['error'] == "Not authorized":
+                self.app_token = IntraPy.check_app_token(self)
+                return IntraPy.api_get(self, uri, methods)
+        except:
+            pass
+        return r

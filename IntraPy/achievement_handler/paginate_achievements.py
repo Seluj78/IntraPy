@@ -18,42 +18,54 @@
 
 import json
 from IntraPy import IntraPy
+from IntraPy.IntraPy import IntraPy
 
 
-def get_achievements_page_number_and_size(app_token: str, page_number: int, page_size: int):
-    achievements = []
-    response = IntraPy.api_get(app_token, "/v2/achievements?page[size]="
-                               + str(page_size) + "&page[number]="
-                               + str(page_number), "GET")
-    ret = json.loads(response.content)
-    i = 0
-    while i < len(ret):
-        achievements.append(ret[i])
-        i += 1
-    return achievements
+class PaginateAchievements(IntraPy):
+    def __init__(self):
+        super().__init__()
 
+    def get_achievements_page_number_and_size(self, page_number: int,
+                                              page_size: int):
+        achievements = []
+        response = IntraPy.IntraPy.api_get(self, "/v2/achievements?page[size]="
+                                   + str(page_size) + "&page[number]="
+                                   + str(page_number), "GET")
+        ret = json.loads(response.content)
+        i = 0
+        while i < len(ret):
+            achievements.append(ret[i])
+            i += 1
+        return achievements
 
-def get_achievements_page_number_and_size_cursus(app_token: str, page_number: int, page_size: int, cursus_id: int):
-    achievements = []
-    response = IntraPy.api_get(app_token, "/v2/cursus/" + str(cursus_id)
-                               + "/achievements?page[size]=" + str(page_size)
-                               + "&page[number]=" + str(page_number), "GET")
-    ret = json.loads(response.content)
-    i = 0
-    while i < len(ret):
-        achievements.append(ret[i])
-        i += 1
-    return achievements
+    def get_achievements_page_number_and_size_cursus(self,
+                                                     page_number: int,
+                                                     page_size: int,
+                                                     cursus_id: int):
+        achievements = []
+        response = IntraPy.IntraPy.api_get(self, "/v2/cursus/" + str(cursus_id)
+                                   + "/achievements?page[size]=" + str(
+            page_size)
+                                   + "&page[number]=" + str(page_number), "GET")
+        ret = json.loads(response.content)
+        i = 0
+        while i < len(ret):
+            achievements.append(ret[i])
+            i += 1
+        return achievements
 
-
-def get_achievements_page_number_and_size_campus(app_token: str, page_number: int, page_size: int, campus_id: int):
-    achievements = []
-    response = IntraPy.api_get(app_token, "/v2/campus/" + str(campus_id)
-                               + "/achievements?page[size]=" + str(page_size)
-                               + "&page[number]=" + str(page_number), "GET")
-    ret = json.loads(response.content)
-    i = 0
-    while i < len(ret):
-        achievements.append(ret[i])
-        i += 1
-    return achievements
+    def get_achievements_page_number_and_size_campus(self,
+                                                     page_number: int,
+                                                     page_size: int,
+                                                     campus_id: int):
+        achievements = []
+        response = IntraPy.IntraPy.api_get(self, "/v2/campus/" + str(campus_id)
+                                   + "/achievements?page[size]=" + str(
+            page_size)
+                                   + "&page[number]=" + str(page_number), "GET")
+        ret = json.loads(response.content)
+        i = 0
+        while i < len(ret):
+            achievements.append(ret[i])
+            i += 1
+        return achievements

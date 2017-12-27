@@ -18,80 +18,92 @@
 
 import json
 from IntraPy import IntraPy
+from IntraPy.IntraPy import IntraPy
 
 
-def get_all_achievements_with_filter(app_token: str, filter_name: str, value: str):
-    achievements = []
-    page_number = 1
-    available_filters = ["id", "name", "internal_name", "kind", "tier",
-                         "description", "pedago", "visible", "nbr_of_success",
-                         "parent_id", "image", "created_at", "updated_at",
-                         "slug", "position", "reward", "title_id"]
-    if filter_name not in available_filters:
-        print("Error: the `filter' parameter given to "
-              "get_all_achievements_sorted isn't recognised")
-        return
-    while page_number <= 3:  # TODO: Warning: This number might need to change
-        response = IntraPy.api_get(app_token, "/v2/achievements?page[size]=100&"
-                                              "page[number]=" + str(page_number)
-                                   + "&filter[" + str(filter_name) + "]="
-                                   + str(value), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        page_number = page_number + 1
-    return achievements
+class FilterAchievements(IntraPy):
+    def __init__(self):
+        super().__init__()
 
+    def get_all_achievements_with_filter(self, filter_name: str,
+                                         value: str):
+        achievements = []
+        page_number = 1
+        available_filters = ["id", "name", "internal_name", "kind", "tier",
+                             "description", "pedago", "visible",
+                             "nbr_of_success",
+                             "parent_id", "image", "created_at", "updated_at",
+                             "slug", "position", "reward", "title_id"]
+        if filter_name not in available_filters:
+            print("Error: the `filter' parameter given to "
+                  "get_all_achievements_sorted isn't recognised")
+            return
+        while page_number <= 3:  # TODO: Warning: This number might need to change
+            response = IntraPy.IntraPy.api_get(self,
+                                       "/v2/achievements?page[size]=100&"
+                                       "page[number]=" + str(page_number)
+                                       + "&filter[" + str(filter_name) + "]="
+                                       + str(value), "GET")
+            ret = json.loads(response.content)
+            i = 0
+            while i < len(ret):
+                achievements.append(ret[i])
+                i += 1
+            page_number = page_number + 1
+        return achievements
 
-def get_all_achievements_with_filter_cursus(app_token: str, filter_name: str, value: str, cursus_id: int):
-    achievements = []
-    page_number = 1
-    available_filters = ["id", "name", "internal_name", "kind", "tier",
-                         "description", "pedago", "visible", "nbr_of_success",
-                         "parent_id", "image", "created_at", "updated_at",
-                         "slug", "position", "reward", "title_id"]
-    if filter_name not in available_filters:
-        print("Error: the `filter' parameter given to "
-              "get_all_achievements_sorted isn't recognised")
-        return
-    while page_number <= 3:  # TODO: Warning: This number might need to change
-        response = IntraPy.api_get(app_token, "/v2/cursus/" + str(cursus_id)
-                                   + "/achievements?page[size]=100"
-                                     "&page[number]=" + str(page_number)
-                                   + "&filter[" + str(filter_name) + "]="
-                                   + str(value), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        page_number = page_number + 1
-    return achievements
+    def get_all_achievements_with_filter_cursus(self,
+                                                filter_name: str, value: str,
+                                                cursus_id: int):
+        achievements = []
+        page_number = 1
+        available_filters = ["id", "name", "internal_name", "kind", "tier",
+                             "description", "pedago", "visible",
+                             "nbr_of_success",
+                             "parent_id", "image", "created_at", "updated_at",
+                             "slug", "position", "reward", "title_id"]
+        if filter_name not in available_filters:
+            print("Error: the `filter' parameter given to "
+                  "get_all_achievements_sorted isn't recognised")
+            return
+        while page_number <= 3:  # TODO: Warning: This number might need to change
+            response = IntraPy.IntraPy.api_get(self, "/v2/cursus/" + str(cursus_id)
+                                       + "/achievements?page[size]=100"
+                                         "&page[number]=" + str(page_number)
+                                       + "&filter[" + str(filter_name) + "]="
+                                       + str(value), "GET")
+            ret = json.loads(response.content)
+            i = 0
+            while i < len(ret):
+                achievements.append(ret[i])
+                i += 1
+            page_number = page_number + 1
+        return achievements
 
-
-def get_all_achievements_with_filter_campus(app_token: str, filter_name: str, value: str, campus_id: int):
-    achievements = []
-    page_number = 1
-    available_filters = ["id", "name", "internal_name", "kind", "tier",
-                         "description", "pedago", "visible", "nbr_of_success",
-                         "parent_id", "image", "created_at", "updated_at",
-                         "slug", "position", "reward", "title_id"]
-    if filter_name not in available_filters:
-        print("Error: the `filter' parameter given to "
-              "get_all_achievements_sorted isn't recognised")
-        return
-    while page_number <= 3:  # TODO: Warning: This number might need to change
-        response = IntraPy.api_get(app_token, "/v2/campus/" + str(campus_id)
-                                   + "/achievements?page[size]=100"
-                                     "&page[number]=" + str(page_number)
-                                   + "&filter[" + str(filter_name) + "]="
-                                   + str(value), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        page_number = page_number + 1
-    return achievements
+    def get_all_achievements_with_filter_campus(self,
+                                                filter_name: str, value: str,
+                                                campus_id: int):
+        achievements = []
+        page_number = 1
+        available_filters = ["id", "name", "internal_name", "kind", "tier",
+                             "description", "pedago", "visible",
+                             "nbr_of_success",
+                             "parent_id", "image", "created_at", "updated_at",
+                             "slug", "position", "reward", "title_id"]
+        if filter_name not in available_filters:
+            print("Error: the `filter' parameter given to "
+                  "get_all_achievements_sorted isn't recognised")
+            return
+        while page_number <= 3:  # TODO: Warning: This number might need to change
+            response = IntraPy.IntraPy.api_get(self, "/v2/campus/" + str(campus_id)
+                                       + "/achievements?page[size]=100"
+                                         "&page[number]=" + str(page_number)
+                                       + "&filter[" + str(filter_name) + "]="
+                                       + str(value), "GET")
+            ret = json.loads(response.content)
+            i = 0
+            while i < len(ret):
+                achievements.append(ret[i])
+                i += 1
+            page_number = page_number + 1
+        return achievements

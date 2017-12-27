@@ -18,10 +18,15 @@
 
 import json
 from IntraPy import IntraPy
+from IntraPy.IntraPy import IntraPy
 
 
-def get_achievement_by_id(app_token: str, achievement_id: int):
-    response = IntraPy.api_get(app_token, "/v2/achievements/" +
-                               str(achievement_id), "GET")
-    ret = json.loads(response.content)
-    return ret
+class AchievementById(IntraPy):
+    def __init__(self):
+        super().__init__()
+
+    def get_achievement_by_id(self, achievement_id: int):
+        response = IntraPy.IntraPy.api_get(self, "/v2/achievements/" +
+                                           str(achievement_id), "GET")
+        ret = json.loads(response.content)
+        return ret

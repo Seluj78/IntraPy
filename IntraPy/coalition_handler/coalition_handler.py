@@ -19,54 +19,54 @@
 import json
 from typing import List
 from IntraPy import IntraPy
+from IntraPy.IntraPy import IntraPy
 
 
-def coalition_get_name(app_token: str, coalition: int) -> str:
-    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
-    ret = json.loads(response.content)
-    return ret['coalitions'][coalition - 1]['name']
+class Coalitions(IntraPy):
+    def __init__(self):
+        super().__init__()
 
+    def coalition_get_name(self, coalition: int) -> str:
+        response = IntraPy.IntraPy.api_get(self, "/v2/blocs/1", "GET")
+        ret = json.loads(response.content)
+        return ret['coalitions'][coalition - 1]['name']
 
-def coalitions_get_names(app_token: str) -> List[str]:
-    names = []
-    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
-    ret = json.loads(response.content)
-    coalition_id = 0
-    while coalition_id <= 3:
-        names.append(ret['coalitions'][coalition_id]['name'])
-        coalition_id += 1
-    return names
+    def coalitions_get_names(self) -> List[str]:
+        names = []
+        response = IntraPy.IntraPy.api_get(self, "/v2/blocs/1", "GET")
+        ret = json.loads(response.content)
+        coalition_id = 0
+        while coalition_id <= 3:
+            names.append(ret['coalitions'][coalition_id]['name'])
+            coalition_id += 1
+        return names
 
+    def coalition_get_slug(self, coalition: int) -> str:
+        response = IntraPy.IntraPy.api_get(self, "/v2/blocs/1", "GET")
+        ret = json.loads(response.content)
+        return ret['coalitions'][coalition - 1]['slug']
 
-def coalition_get_slug(app_token: str, coalition: int) -> str:
-    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
-    ret = json.loads(response.content)
-    return ret['coalitions'][coalition - 1]['slug']
+    def coalitions_get_slugs(self) -> List[int]:
+        slugs = []
+        response = IntraPy.IntraPy.api_get(self, "/v2/blocs/1", "GET")
+        ret = json.loads(response.content)
+        coalition_id = 0
+        while coalition_id <= 3:
+            slugs.append(ret['coalitions'][coalition_id]['slug'])
+            coalition_id += 1
+        return slugs
 
+    def coalition_get_score(self, coalition: int) -> int:
+        response = IntraPy.IntraPy.api_get(self, "/v2/blocs/1", "GET")
+        ret = json.loads(response.content)
+        return ret['coalitions'][coalition]['score']
 
-def coalitions_get_slugs(app_token: str) -> List[int]:
-    slugs = []
-    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
-    ret = json.loads(response.content)
-    coalition_id = 0
-    while coalition_id <= 3:
-        slugs.append(ret['coalitions'][coalition_id]['slug'])
-        coalition_id += 1
-    return slugs
-
-
-def coalition_get_score(app_token: str, coalition: int) -> int:
-    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
-    ret = json.loads(response.content)
-    return ret['coalitions'][coalition]['score']
-
-
-def coalitions_get_scores(app_token: str) -> List[int]:
-    scores = []
-    response = IntraPy.api_get(app_token, "/v2/blocs/1", "GET")
-    ret = json.loads(response.content)
-    coalition_id = 0
-    while coalition_id <= 3:
-        scores.append(ret['coalitions'][coalition_id]['score'])
-        coalition_id += 1
-    return scores
+    def coalitions_get_scores(self) -> List[int]:
+        scores = []
+        response = IntraPy.IntraPy.api_get(self, "/v2/blocs/1", "GET")
+        ret = json.loads(response.content)
+        coalition_id = 0
+        while coalition_id <= 3:
+            scores.append(ret['coalitions'][coalition_id]['score'])
+            coalition_id += 1
+        return scores

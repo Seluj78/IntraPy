@@ -18,54 +18,60 @@
 
 import json
 from IntraPy import IntraPy
+from IntraPy.IntraPy import IntraPy
 
 
-def get_all_achievements(app_token: str):
-    achievements = []
-    page_number = 1
-    while page_number <= 3:  # TODO: Change this matching to the number of
-                                                    # achievements availables
-        response = IntraPy.api_get(app_token, "/v2/achievements?page[size]=100"
-                                              "&page[number]=" +
-                                   str(page_number), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        page_number = page_number + 1
-    return achievements
+class GetAllAchievements(IntraPy):
+    def __init__(self):
+        super().__init__()
 
+    def get_all_achievements(self):
+        achievements = []
+        page_number = 1
+        while page_number <= 3:  # TODO: Change this matching to the number of
+            # achievements availables
+            response = IntraPy.IntraPy.api_get(self,
+                                       "/v2/achievements?page[size]=100"
+                                       "&page[number]=" +
+                                       str(page_number), "GET")
+            ret = json.loads(response.content)
+            i = 0
+            while i < len(ret):
+                achievements.append(ret[i])
+                i += 1
+            page_number = page_number + 1
+        return achievements
 
-def get_all_achievements_cursus(app_token: str, cursus_id: int):
-    achievements = []
-    page_number = 1
-    while page_number <= 3:  # TODO: Change this matching to the number of
-                                                    # achievements availables
-        response = IntraPy.api_get(app_token, "/v2/cursus/" + str(cursus_id)
-                                   + "/achievements?page[size]=100"
-                                     "&page[number]=" + str(page_number), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        page_number = page_number + 1
-    return achievements
+    def get_all_achievements_cursus(self, cursus_id: int):
+        achievements = []
+        page_number = 1
+        while page_number <= 3:  # TODO: Change this matching to the number of
+            # achievements availables
+            response = IntraPy.IntraPy.api_get(self, "/v2/cursus/" + str(cursus_id)
+                                       + "/achievements?page[size]=100"
+                                         "&page[number]=" + str(page_number),
+                                       "GET")
+            ret = json.loads(response.content)
+            i = 0
+            while i < len(ret):
+                achievements.append(ret[i])
+                i += 1
+            page_number = page_number + 1
+        return achievements
 
-
-def get_all_achievements_campus(app_token: str, campus_id: int):
-    achievements = []
-    page_number = 1
-    while page_number <= 3:  # TODO: Change this matching to the number of
-                                                    # achievements availables
-        response = IntraPy.api_get(app_token, "/v2/campus/" + str(campus_id)
-                                   + "/achievements?page[size]=100"
-                                     "&page[number]=" + str(page_number), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        page_number = page_number + 1
-    return achievements
+    def get_all_achievements_campus(self, campus_id: int):
+        achievements = []
+        page_number = 1
+        while page_number <= 3:  # TODO: Change this matching to the number of
+            # achievements availables
+            response = IntraPy.IntraPy.api_get(self, "/v2/campus/" + str(campus_id)
+                                       + "/achievements?page[size]=100"
+                                         "&page[number]=" + str(page_number),
+                                       "GET")
+            ret = json.loads(response.content)
+            i = 0
+            while i < len(ret):
+                achievements.append(ret[i])
+                i += 1
+            page_number = page_number + 1
+        return achievements
