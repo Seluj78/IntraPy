@@ -17,7 +17,6 @@
 """
 
 import json
-from IntraPy import IntraPy
 from IntraPy.IntraPy import IntraPy
 
 
@@ -30,7 +29,7 @@ class Accreditations(IntraPy):
         page_number = 1
         while page_number <= 10:  # Warning: This number needs to be changed if
             # the number of accreditations given gets bigger than 100 * 10
-            response = IntraPy.IntraPy.api_get(self, "/v2/accreditations?"
+            response = self.api_get("/v2/accreditations?"
                                                      "page[size]=100&"
                                                      "page[number]=" +
                                                str(page_number), "GET")
@@ -45,10 +44,9 @@ class Accreditations(IntraPy):
     def get_accreditation_page_number_and_size(self, page_number: int,
                                                page_size: int):
         accreditations = []
-        response = IntraPy.IntraPy.api_get(self, "/v2/accreditations?"
-                                                 "page[size]=" + str(page_size)
-                                           + "&page[number]=" +
-                                           str(page_number), "GET")
+        response = self.api_get("/v2/accreditations?page[size]=" +
+                                str(page_size) + "&page[number]=" +
+                                str(page_number), "GET")
         ret = json.loads(response.content)
         i = 0
         while i < len(ret):
@@ -57,7 +55,7 @@ class Accreditations(IntraPy):
         return accreditations
 
     def get_accreditation_by_id(self, accreditation_id: int):
-        response = IntraPy.IntraPy.api_get(self, "/v2/accreditations/" +
-                                           str(accreditation_id), "GET")
+        response = self.api_get("/v2/accreditations/" +
+                                str(accreditation_id), "GET")
         ret = json.loads(response.content)
         return ret

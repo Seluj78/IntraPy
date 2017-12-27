@@ -8,3 +8,6 @@ Cleanup of wiki for clearer navigation and same for .py files
 Add the info token endpoint
 Automated tests
 Add in wiki links to file where function is located
+DOC
+remove `->`
+Utility functions that will sort and return useful data on coalitions
