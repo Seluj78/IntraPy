@@ -9,4 +9,5 @@ Core Contributors
 
 Patches and Suggestions
 ```````````````````````
-- Dylan Djian `@dylandjian <https://github.com/dylandjian>`_, Object Oriented Master
+- Dylan Djian `@dylandjian <https://github.com/dylandjian>`_, Object Oriented Counselor
+- Thomas GLaudel `@tglaudel <https://github.com/tglaudel>`_, TDD Counselor
