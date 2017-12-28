@@ -27,10 +27,10 @@ class Accreditations(IntraPy):
     def get_all_accreditations(self):
         accreditations = []
         page_number = 1
-        while page_number <= 10:  # Warning: This number needs to be changed if
+        while page_number <= 1:  # Warning: This number needs to be changed if
             # the number of accreditations given gets bigger than 100 * 10
             response = self.api_get("/v2/accreditations?"
-                                                     "page[size]=100&"
+                                                     "page[size]=30&"
                                                      "page[number]=" +
                                                str(page_number), "GET")
             ret = json.loads(response.content)

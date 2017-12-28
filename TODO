@@ -11,3 +11,4 @@ Add in wiki links to file where function is located
 DOC
 remove `->`
 Utility functions that will sort and return useful data on coalitions
+Add a global import file for all classes
