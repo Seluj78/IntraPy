@@ -9,3 +9,4 @@ Core Contributors
 
 Patches and Suggestions
 ```````````````````````
+- Dylan Djian `@dylandjian <https://github.com/dylandjian>`_, Object Oriented Master
