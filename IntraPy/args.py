@@ -16,8 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import json
-#from IntraPy import IntraPy
+from IntraPy import IntraPy
 
 
 class Args:
@@ -26,9 +25,8 @@ class Args:
     """
     options = {}
 
-    def __init__(self, **options):
+    def __init__(self, options):
         self.page_number = options.get("page_number", 1)
         self.page_size = options.get("page_size", 30)
-        self.sort =  options.get("sort" , "id")
+        self.sort = options.get("sort", "id")
         self.page_index = 1
-

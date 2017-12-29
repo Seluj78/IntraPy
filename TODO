@@ -12,3 +12,4 @@ DOC
 remove `->`
 Utility functions that will sort and return useful data on coalitions
 Add a global import file for all classes
+Parsing of sorts, filters and range (Check if the user sent the correct type)

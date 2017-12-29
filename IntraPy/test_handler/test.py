@@ -20,11 +20,12 @@ import json
 from IntraPy.IntraPy import IntraPy
 from IntraPy.args import Args
 
+
 class Test(IntraPy, Args):
     def __init__(self):
         super().__init__()
 
-    def iterrate_trough(self, str_url,arg , options):
+    def iterate_through(self, str_url, arg, options):
         achievements = []
         if options.get("page_size", 30) > 100:
             options["page_size"] = 100  # TODO return an error
@@ -32,7 +33,7 @@ class Test(IntraPy, Args):
             response = self.api_get(str(str_url)
                                     + self.get_options(arg)
                                     , "GET")
-            ret= json.loads(response.content)
+            ret = json.loads(response.content)
             i = 0
             while i < len(ret):
                 achievements.append(ret[i])
@@ -53,9 +54,7 @@ class Test(IntraPy, Args):
     def get_test(self, test_url: str, **options):
         str_url = "/v2/" + str(test_url)
         args = Args(options)
-
-        achievements = self.iterrate_trough(str_url, args, options)
-
+        achievements = self.iterate_through(str_url, args, options)
         if options.get("pretty", False):
             return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements
