@@ -19,42 +19,28 @@
 import json
 from IntraPy.IntraPy import IntraPy
 from IntraPy.args import Args
+from IntraPy.utils import Utils
 
 
 class Test(IntraPy, Args):
+
+
+
     def __init__(self):
+        self.utils = Utils()
+        self.rules = ['id', 'name', 'internal_name', 'kind', 'tier', 'description',
+             'pedago', 'visible', 'nbr_of_success', 'parent_id', 'image', 'created_at',
+             'updated_at', 'slug', 'position', 'reward', 'title_id']
         super().__init__()
-
-    def iterate_through(self, str_url, arg, options):
-        achievements = []
-        if options.get("page_size", 30) > 100:
-            options["page_size"] = 100  # TODO return an error
-        while arg.page_index <= options.get("page_number", 1):
-            response = self.api_get(str(str_url)
-                                    + self.get_options(arg)
-                                    , "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            arg.page_index += 1
-        return achievements
-
-    def get_options(self, arg):
-        #TODO gestion des flags pour filter, sort et range. Param global ?
-        str_options = "?" + \
-                      "page[size]=" + str(arg.page_size)\
-                      + "&"\
-                      + "page[number]=" + str(arg.page_index)\
-                      + "&"\
-                     # + "" if not options.has_key("sort") else "sort=" + options.get("sort", "id")
-        return str_options
+        args = Args()
 
     def get_test(self, test_url: str, **options):
         str_url = "/v2/" + str(test_url)
-        args = Args(options)
-        achievements = self.iterate_through(str_url, args, options)
+        options["rules"] = self.rules
+        args = Args()
+        if args.hydrate_values(options) is False:
+            return "ERROR : Options couldn't be extract"
+        achievements = self.utils.get_all_pages(str_url, args)
         if options.get("pretty", False):
             return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements

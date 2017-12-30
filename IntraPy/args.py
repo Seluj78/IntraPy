@@ -17,7 +17,7 @@
 """
 
 from IntraPy import IntraPy
-
+import re
 
 class Args:
     """
@@ -25,8 +25,34 @@ class Args:
     """
     options = {}
 
-    def __init__(self, options):
+    def __init__(self):
+       pass
+
+    def hydrate_values(self,options):
         self.page_number = options.get("page_number", 1)
-        self.page_size = options.get("page_size", 30)
-        self.sort = options.get("sort", "id")
+        self.page_size = options.get("page_size", 30) if options.get("page_size", 30) <= 100 else 100
+        # TODO Renvoie une erreur
+        if self.check_keywords(options) is False:
+            return False
+        else:
+            self.sort = options.get("sort", "id")
         self.page_index = 1
+        self.check_keywords(options)
+
+    def check_keywords(self,options):
+        if "rules" not in options: #S'il n'y a pas de regle, l'api de 42 les ignorera =D
+            return True
+        if self.sanitize_keyword_string(options.get("sort", "id"), options["rules"]) is False:
+            print("ERROR : Wrong parameters for 'sort' option")
+            return False
+        return True
+
+    def sanitize_keyword_string(self,str, rules):
+        keyword = []
+        keyword = str.split(',') #cree une liste de chaque mot
+        for i, s in enumerate(keyword):
+            keyword[i] = re.sub(r'-', '', s) #enleve les '-' avant la comparaison
+        for i,s in enumerate(keyword):
+            if s not in rules: #verifie que le mot soit dans les regles envoye par la classe initiale
+                return False
+        return True
