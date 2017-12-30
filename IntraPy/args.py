@@ -31,11 +31,11 @@ class Args:
     def hydrate_values(self,options):
         self.page_number = options.get("page_number", 1)
         self.page_size = options.get("page_size", 30) if options.get("page_size", 30) <= 100 else 100
-        # TODO Renvoie une erreur
         if self.check_keywords(options) is False:
             return False
         else:
-            self.sort = options.get("sort", "id")
+            self.sort = options.get("sort", False)
+            self.filter = options.get("filter", False) #TODO check if works
         self.page_index = 1
         self.check_keywords(options)
 
@@ -45,6 +45,9 @@ class Args:
         if self.sanitize_keyword_string(options.get("sort", "id"), options["rules"]) is False:
             print("ERROR : Wrong parameters for 'sort' option")
             return False
+        if self.sanitize_keyword_string(options.get("filter", "id"), options["rules"]) is False:
+            print("ERROR : Wrong parameters for 'filter' option")
+            return False
         return True
 
     def sanitize_keyword_string(self,str, rules):
@@ -52,6 +55,14 @@ class Args:
         keyword = str.split(',') #cree une liste de chaque mot
         for i, s in enumerate(keyword):
             keyword[i] = re.sub(r'-', '', s) #enleve les '-' avant la comparaison
+        return self.compare_with_rules(str, rules, keyword)
+
+    def sanitize_keyword_brackets(self, str, rules):
+        keyword = []
+        keyword = re.search('[.*]', str)
+        return  self.compare_with_rules(str, rules, keyword)
+
+    def compare_with_rules(self, str, rules, keyword):
         for i,s in enumerate(keyword):
             if s not in rules: #verifie que le mot soit dans les regles envoye par la classe initiale
                 return False

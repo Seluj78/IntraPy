@@ -51,6 +51,8 @@ class Utils(IntraPy):
                       + "&"\
                       + "page[number]=" + str(arg.page_index)\
                       + "&"\
-                      + "sort=" + str(arg.sort)
+                      + "sort=" + str(arg.sort) #TODO add nothing if there is no sort
+
+        # + "" if arg.filter is False else "filter" + str(arg.filter)
                      # + "" if not options.has_key("sort") else "sort=" + options.get("sort", "id")
         return str_options

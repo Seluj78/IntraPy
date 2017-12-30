@@ -24,8 +24,6 @@ from IntraPy.utils import Utils
 
 class Test(IntraPy, Args):
 
-
-
     def __init__(self):
         self.utils = Utils()
         self.rules = ['id', 'name', 'internal_name', 'kind', 'tier', 'description',
