@@ -26,18 +26,18 @@ class Test(IntraPy, Args):
 
     def __init__(self):
         self.utils = Utils()
-        self.rules = ['id', 'name', 'internal_name', 'kind', 'tier', 'description',
-             'pedago', 'visible', 'nbr_of_success', 'parent_id', 'image', 'created_at',
-             'updated_at', 'slug', 'position', 'reward', 'title_id']
+        self.rules = ['id', 'name', 'internal_name', 'kind', 'tier',
+                      'description', 'pedago', 'visible', 'nbr_of_success',
+                      'parent_id', 'image', 'created_at', 'updated_at', 'slug',
+                      'position', 'reward', 'title_id']
         super().__init__()
-        args = Args()
 
     def get_test(self, test_url: str, **options):
+        args = Args(options)
         str_url = "/v2/" + str(test_url)
         options["rules"] = self.rules
-        args = Args()
         if args.hydrate_values(options) is False:
-            return "ERROR : Options couldn't be extract"
+            return "ERROR : Options couldn't be extracted"
         achievements = self.utils.get_all_pages(str_url, args)
         if options.get("pretty", False):
             return json.dumps(achievements, indent=4, sort_keys=True)
