@@ -39,7 +39,7 @@ class IntraPy:
         self.token_file = TOKEN_FILE
         self.app_token = IntraPy.check_app_token(self)
 
-    def api_request_new_token(self) -> str:
+    def api_request_new_token(self):
         d = {'grant_type': 'client_credentials',
              'client_id': self.app_uid, 'client_secret': self.app_secret}
         r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
