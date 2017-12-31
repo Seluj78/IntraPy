@@ -28,11 +28,12 @@ class IntraPy:
     """
 
     def __init__(self):
-        if not (APP_SECRET and APP_UID and TOKEN_FILE):
-            print("42\'s variables (App secret, App UID, and the token file "
-                  "or both) are not set either in your environment variables or"
-                  " in the settings.ini file.")
-            sys.exit(EnvironmentError)
+        if APP_UID == "None":
+            raise ValueError("APP_UID wasn't found in your settings.ini file.")
+        if APP_SECRET == "None":
+            raise ValueError("APP_SECRET wasn't found in your settings.ini file.")
+        if TOKEN_FILE == "None":
+            raise ValueError("TOKEN_FILE wasn't found in your settings.ini file.")
         self.app_secret = APP_SECRET
         self.app_uid = APP_UID
         self.token_file = TOKEN_FILE
