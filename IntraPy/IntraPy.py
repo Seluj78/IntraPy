@@ -56,7 +56,7 @@ class IntraPy:
 
     def test_token(self):
         """
-        This function will test on /v2/accreditations if the token is still
+        This function will test on `/oauth/token/info` if the token is still
         available and hasn't expired
 
         :return: Returns True if the token is still usable, false otherwise
@@ -64,11 +64,9 @@ class IntraPy:
         self.app_token = IntraPy.get_token_from_file(self)
         h = {'Authorization': 'Bearer ' + self.app_token}
         r = requests.request("GET",
-                             "https://api.intra.42.fr" + "/v2/accreditations"
-                                                         "?page[size]=1",
-                             headers=h, allow_redirects=False)
+                             "https://api.intra.42.fr" + "/oauth/token/info", headers=h, allow_redirects=False)
         try:
-            if r.json()['error'] == "Not authorized":
+            if r.json()['error'] == "invalid_request":
                 return False
         except:
             pass
