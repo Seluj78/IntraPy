@@ -38,7 +38,7 @@ class Test(IntraPy, Args):
         options["rules"] = self.rules
         if args.hydrate_values(options) is False:
             return "ERROR : Options couldn't be extracted"
-        achievements = self.utils.get_all_pages(str_url, args)
+        achievements = self.utils.get_pages(str_url, args)
         if options.get("pretty", False):
             return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements

@@ -28,32 +28,29 @@ class Utils(IntraPy):
     def __init__(self):
         super().__init__()
 
-    def get_all_pages(self, str_url, arg):
-        achievements = []
-        optionnal = self.get_optionnal(arg) #pour eviter de refaire une string qui ne changera jamais
-        while arg.page_index <= arg.page_number:
-            response = self.api_get(str(str_url)
-                                    + self.get_changeable(arg)
-                                    + optionnal
-                                    , "GET")
+    def get_pages(self, url, args):
+        result = []
+        fixed_parameters = self.get_fixed_parameters(args)
+        while args.from_page <= args.to_page:
+            response = self.api_get(str(url) + self.get_changeable_parameters(args) + fixed_parameters, "GET")
             ret = json.loads(response.content)
+            if not ret:
+                break
             i = 0
             while i < len(ret):
-                achievements.append(ret[i])
+                result.append(ret[i])
                 i += 1
-            arg.page_index += 1
-        return achievements
+            args.from_page += 1
+        return result
 
-    def get_changeable(self, arg):
-        number = "page[number]=" + str(arg.page_index)
-        str_options = "?" + number
-        return str_options
+    def get_changeable_parameters(self, args):
+        return "?" + "page[number]=" + str(args.from_page)
 
-    def get_optionnal(self, arg):
-        optionnal = "&page[size]=" + str(arg.page_size)
-        if type(arg.sort) == str:
-            optionnal += "&sort=" + str(arg.sort)
-        if type(arg.filter) == str:
-            optionnal += "&filter" + str(arg.filter)
+    def get_fixed_parameters(self, args):
+        fixed_parameters = "&page[size]=" + str(args.page_size)
+        if type(args.sort) == str:
+            fixed_parameters += "&sort=" + str(args.sort)
+        if type(args.filter) == str:
+            fixed_parameters += "&filter" + str(args.filter)
         #TODO Range
-        return optionnal
+        return fixed_parameters

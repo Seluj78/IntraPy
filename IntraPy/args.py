@@ -24,39 +24,42 @@ class Args:
         This will be the class for Argument handling
         TODO: Extended documentation
         TODO: Better error handling and error messages
+
+        If page_number is explicitely set through options when calling test_get, then the return will be the page PAGE_NUMBER.
+        If from_page and to_page are set, it will loop through them
+        Else, it will do all the pages until return is empty
+
     """
     options = {}
 
     def __init__(self):
-        # TODO: Add test here to test if options != NULL etc
         self.page_number = None
-        self.page_size = None
-        self.sort = None
-        self.filter = None
-        self.range = None
-        self.page_index = None
-        self.all_pages = None
+        self.page_size = 30
+        self.sort = None #TODO: ADD multiple sorts functionality
+        self.filter = None #TODO: TEST
+        self.range = None # TODO: ADD AND TEST
+        self.from_page = None
+        self.to_page = None
 
     def hydrate_values(self, options):
-        self.all_pages = options.get("all_pages", False)
-        if not type(self.all_pages) == type(True) :
-            print("ERROR : all_pages must be bool")
-            return False
-        if self.all_pages is True:
-            self.page_index = 1
-        else :
-            self.page_index = options.get("page_number", 1)
-        self.page_number = options.get("page_number", 1)# TODO GESTION ERREUR STR -> INT (page_number="LOL")
-        if not type(self.page_number) == int:
-            print("ERROR : page_number must be Int")
-            return False
+        self.page_number = options.get("page_number", -1)
+        if not isinstance(self.page_number, int):
+            raise TypeError("page_number must be an int")
+        if self.page_number > 0: # ICI, page number a la priorite sur to and from pages
+            self.from_page = self.page_number
+            self.to_page = self.page_number
+        else:
+            self.from_page = options.get("from_page", 1)
+            if not isinstance(self.from_page, int):
+                raise TypeError("from_page must be an int")
+            self.to_page = options.get("to_page", 1800)  # 1800 pour 1800 active requests max dans l'api
+            if not isinstance(self.to_page, int):
+                raise TypeError("to_page must be an int")
         self.page_size = options.get("page_size", 30)
-        if not type(self.page_size) == int:
-            print("ERROR : page_size must be Int")
-            return False
-        elif self.page_size > 100 :
-            print("ERROR : page_size must be 100 or lower")
-            return False
+        if not isinstance(self.page_size, int):
+            raise TypeError("page_size must be an int")
+        elif self.page_size > 100:
+            raise ValueError("page_size must be <= 100")
         if self.check_keywords(options) is False:
             return False
         else:
@@ -92,7 +95,14 @@ class Args:
         return self.compare_with_rules(rules, keyword)
 
     def compare_with_rules(self, rules, keyword):
+        """
+        This function will test `keyword` against every entry of the list `rules`.
+
+        :param rules: Rules list containing all authorized rules
+        :param keyword: The keyword to test
+        :return: If `keyword` isn't found, `False` is returned. `True` otherwise
+        """
         for i, s in enumerate(keyword):
-            if s not in rules: #verifie que le mot soit dans les regles envoye par la classe initiale
+            if s not in rules:
                 return False
         return True
