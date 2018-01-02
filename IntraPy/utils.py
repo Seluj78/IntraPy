@@ -30,9 +30,11 @@ class Utils(IntraPy):
 
     def get_all_pages(self, str_url, arg):
         achievements = []
+        optionnal = self.get_optionnal(arg) #pour eviter de refaire une string qui ne changera jamais
         while arg.page_index <= arg.page_number:
             response = self.api_get(str(str_url)
-                                    + self.get_options(arg)
+                                    + self.get_changeable(arg)
+                                    + optionnal
                                     , "GET")
             ret = json.loads(response.content)
             i = 0
@@ -42,16 +44,16 @@ class Utils(IntraPy):
             arg.page_index += 1
         return achievements
 
-    def get_options(self, arg):
-        #TODO gestion des flags pour filter, sort et range. Param global ?
-
-        str_options = "?" + \
-                      "page[size]=" + str(arg.page_size)\
-                      + "&"\
-                      + "page[number]=" + str(arg.page_index)\
-                      + "&"\
-                      + "sort=" + str(arg.sort) #TODO add nothing if there is no sort
-
-        # + "" if arg.filter is False else "filter" + str(arg.filter)
-                     # + "" if not options.has_key("sort") else "sort=" + options.get("sort", "id")
+    def get_changeable(self, arg):
+        number = "page[number]=" + str(arg.page_index)
+        str_options = "?" + number
         return str_options
+
+    def get_optionnal(self, arg):
+        optionnal = "&page[size]=" + str(arg.page_size)
+        if type(arg.sort) == str:
+            optionnal += "&sort=" + str(arg.sort)
+        if type(arg.filter) == str:
+            optionnal += "&filter" + str(arg.filter)
+        #TODO Range
+        return optionnal

@@ -39,13 +39,24 @@ class Args:
 
     def hydrate_values(self, options):
         self.all_pages = options.get("all_pages", False)
+        if not type(self.all_pages) == type(True) :
+            print("ERROR : all_pages must be bool")
+            return False
         if self.all_pages is True:
             self.page_index = 1
         else :
             self.page_index = options.get("page_number", 1)
         self.page_number = options.get("page_number", 1)# TODO GESTION ERREUR STR -> INT (page_number="LOL")
-        self.page_size = options.get("page_size", 30) if \
-            options.get("page_size", 30) <= 100 else 100
+        if not type(self.page_number) == int:
+            print("ERROR : page_number must be Int")
+            return False
+        self.page_size = options.get("page_size", 30)
+        if not type(self.page_size) == int:
+            print("ERROR : page_size must be Int")
+            return False
+        elif self.page_size > 100 :
+            print("ERROR : page_size must be 100 or lower")
+            return False
         if self.check_keywords(options) is False:
             return False
         else:
@@ -56,14 +67,14 @@ class Args:
     def check_keywords(self,options):
         if "rules" not in options: # S'il n'y a pas de regle, l'api de 42 les ignorera =D
             return True
-        if self.sanitize_keyword_string(options.get("sort", "id"),
+        if "sort" in options and self.sanitize_keyword_string(options.get("sort", "id"),
                                         options["rules"]) is False:
             print("ERROR : Wrong parameters for 'sort' option") # TODO: Error message with wrong parameter
             return False
-        #if self.sanitize_keyword_brackets(options.get("filter", "id"),
-        #                                options["rules"]) is False:
-        #    print("ERROR : Wrong parameters for 'filter' option")
-        #    return False
+        if "filter" in options and self.sanitize_keyword_brackets(options.get("filter", "id"),
+                                        options["rules"]) is False:
+            print("ERROR : Wrong parameters for 'filter' option")
+            return False
         return True
 
     def sanitize_keyword_string(self, string, rules):
@@ -73,7 +84,11 @@ class Args:
         return self.compare_with_rules(rules, keyword)
 
     def sanitize_keyword_brackets(self, string, rules):
-        keyword = re.search('[.*]', string)
+        keyword = re.match(r"\[(.*?)\]", string)
+        if keyword is None:
+            print("ERROR : filter bad format")
+            return False
+        keyword = keyword.groups()
         return self.compare_with_rules(rules, keyword)
 
     def compare_with_rules(self, rules, keyword):
