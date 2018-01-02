@@ -25,7 +25,9 @@ from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE
 
 class IntraPy:
     """
-        This is the main class for IntraPy
+        This is the main class for IntraPy. It contains the app_token handling
+        and any other widely used function throughout the module as IntraPy
+        expands many classes
     """
 
     def __init__(self):
@@ -60,7 +62,7 @@ class IntraPy:
         This function will test on `/oauth/token/info` if the token is still
         available and hasn't expired
 
-        :return: Returns True if the token is still usable, false otherwise
+        :return: Returns True if the token is still usable, False otherwise.
         """
         self.app_token = IntraPy.get_token_from_file(self)
         h = {'Authorization': 'Bearer ' + self.app_token}
@@ -75,6 +77,7 @@ class IntraPy:
 
     def get_token_from_file(self):
         """
+        This function will get from the TOKEN_FILE file the first line
         :return: Returns the first line of the token file containing the
         app token.
         """
@@ -89,7 +92,7 @@ class IntraPy:
         If the file is empty
         If the token is expired/incomplete
 
-        :return: Returns the app_token once every check is done
+        :return: Returns the app_token string
         """
         if os.path.exists(TOKEN_FILE):
             if os.stat(TOKEN_FILE).st_size != 0:
@@ -108,13 +111,14 @@ class IntraPy:
 
     def api_get(self, uri: str, methods="GET"):
         """
-
         This function will handle all the API requests.
+        If the token suddenly expires, this function will call check_token
+        and then recursively call itself again until the token works.
 
         :param uri: The url you want to request from
-        :param methods: The method you want to to your API request on. By default, `methods` is set to GET
+        :param methods: The method you want to to your API request on. By default, `methods` is set to `GET`
 
-        :return: Returns the response object returned by requests.request
+        :return: Returns the response object returned by requests.request()
         """
         h = {'Authorization': 'Bearer ' + self.app_token}
         r = requests.request(methods, "https://api.intra.42.fr" +
