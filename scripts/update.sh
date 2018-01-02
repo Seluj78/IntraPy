@@ -57,7 +57,7 @@ fi
 last_commit_message=$(git log | head -n 5 | tail -n 1 | awk '$1=$1')
 
 read -p "Do you want to use the last commit message ?" -n 1 -r
-if [[ ! $REPLY =~ ^[Yy]$ ]]
+if [[ $REPLY =~ ^[Yy]$ ]]
 then
     git tag $1 -m $last_commit_message
 else
