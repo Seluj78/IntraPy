@@ -19,7 +19,7 @@ then
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 
-if [[ ! $(grep -q "$1" setup.py && echo $?) ]] #ERROR HERE
+if [[ ! $(grep -q "$1" setup.py && echo $?) ]]
 then
 	echo $1
     sed -i '' 's/'"$old"'/'"$1"'/g' setup.py
@@ -27,7 +27,7 @@ then
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 echo
-if [[ ! $(grep -q "$1" IntraPy/__init__.py && echo $?) ]] #ERROR HERE
+if [[ ! $(grep -q "$1" IntraPy/__init__.py && echo $?) ]]
 then
     sed -i '' 's/'"$old"'/'"$1"'/g' IntraPy/__init__.py
     echo "Error: $1 not found in IntraPy/__init__.py. I just replaced it, please commit and push then start this script again" # TODO: Auto commit/push
