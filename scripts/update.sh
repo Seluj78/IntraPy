@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 old=$(git tag | awk '/./{line=$0} END{print line}')
 
@@ -19,16 +19,17 @@ then
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 
-if [[ ! grep -q "$1" setup.py && echo $? ]] #ERROR HERE
+if [[ ! $(grep -q "$1" setup.py && echo $?) ]] #ERROR HERE
 then
-    sed -i '' 's/'$old'/'$1'/g' setup.py
+	echo $1
+    sed -i '' 's/'"$old"'/'"$1"'/g' setup.py
     echo "Error: $1 not found in setup.py. I just replaced it, please commit and push then start this script again" # TODO: Auto commit/push
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 echo
-if [[ ! grep -q "$1" IntraPy/__init__.py && echo $? ]] #ERROR HERE
+if [[ ! $(grep -q "$1" IntraPy/__init__.py && echo $?) ]] #ERROR HERE
 then
-    sed -i '' 's/'$old'/'$1'/g' IntraPy/__init__.py
+    sed -i '' 's/'"$old"'/'"$1"'/g' IntraPy/__init__.py
     echo "Error: $1 not found in IntraPy/__init__.py. I just replaced it, please commit and push then start this script again" # TODO: Auto commit/push
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
@@ -67,6 +68,7 @@ fi
 
 git push --tags origin master
 python setup.py register sdist upload
+# TODO some error to be fixed, doesnt work on linux or mac os one of them
 
 
 
