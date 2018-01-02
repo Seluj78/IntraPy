@@ -25,12 +25,12 @@ class Coalitions(IntraPy):
     def __init__(self):
         super().__init__()
 
-    def get_name(self, coalition: int) -> str:
+    def get_name(self, coalition: int):
         response = self.api_get("/v2/blocs/1", "GET")
         ret = json.loads(response.content)
         return ret['coalitions'][coalition - 1]['name']
 
-    def get_names(self) -> List[str]:
+    def get_names(self):
         names = []
         response = self.api_get("/v2/blocs/1", "GET")
         ret = json.loads(response.content)
@@ -40,12 +40,12 @@ class Coalitions(IntraPy):
             coalition_id += 1
         return names
 
-    def get_slug(self, coalition: int) -> str:
+    def get_slug(self, coalition: int):
         response = self.api_get("/v2/blocs/1", "GET")
         ret = json.loads(response.content)
         return ret['coalitions'][coalition - 1]['slug']
 
-    def get_slugs(self) -> List[int]:
+    def get_slugs(self):
         slugs = []
         response = self.api_get("/v2/blocs/1", "GET")
         ret = json.loads(response.content)
@@ -55,12 +55,12 @@ class Coalitions(IntraPy):
             coalition_id += 1
         return slugs
 
-    def get_score(self, coalition: int) -> int:
+    def get_score(self, coalition: int):
         response = self.api_get("/v2/blocs/1", "GET")
         ret = json.loads(response.content)
         return ret['coalitions'][coalition]['score']
 
-    def get_scores(self) -> List[int]:
+    def get_scores(self):
         scores = []
         response = self.api_get("/v2/blocs/1", "GET")
         ret = json.loads(response.content)
