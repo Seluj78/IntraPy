@@ -51,10 +51,10 @@ class Args:
                                         options["rules"]) is False:
             print("ERROR : Wrong parameters for 'sort' option")
             return False
-        if self.sanitize_keyword_string(options.get("filter", "id"),
-                                        options["rules"]) is False:
-            print("ERROR : Wrong parameters for 'filter' option")
-            return False
+        #if self.sanitize_keyword_brackets(options.get("filter", "id"),
+        #                                options["rules"]) is False:
+        #    print("ERROR : Wrong parameters for 'filter' option")
+        #    return False
         return True
 
     def sanitize_keyword_string(self, string, rules):
