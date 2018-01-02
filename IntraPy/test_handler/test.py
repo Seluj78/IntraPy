@@ -33,7 +33,7 @@ class Test(IntraPy, Args):
         super().__init__()
 
     def get_test(self, test_url: str, **options):
-        args = Args(options)
+        args = Args()
         str_url = "/v2/" + str(test_url)
         options["rules"] = self.rules
         if args.hydrate_values(options) is False:

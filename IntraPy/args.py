@@ -27,16 +27,25 @@ class Args:
     """
     options = {}
 
-    def __init__(self, options):
+    def __init__(self):
         # TODO: Add test here to test if options != NULL etc
-        self.page_number = options.get("page_number", 1)
-        self.page_size = options.get("page_size", 30) if \
-            options.get("page_size", 30) <= 100 else 100
+        self.page_number = None
+        self.page_size = None
         self.sort = None
         self.filter = None
-        self.page_index = 1
+        self.range = None
+        self.page_index = None
+        self.all_pages = None
 
     def hydrate_values(self, options):
+        self.all_pages = options.get("all_pages", False)
+        if self.all_pages is True:
+            self.page_index = 1
+        else :
+            self.page_index = options.get("page_number", 1)
+        self.page_number = options.get("page_number", 1)# TODO GESTION ERREUR STR -> INT (page_number="LOL")
+        self.page_size = options.get("page_size", 30) if \
+            options.get("page_size", 30) <= 100 else 100
         if self.check_keywords(options) is False:
             return False
         else:
@@ -49,7 +58,7 @@ class Args:
             return True
         if self.sanitize_keyword_string(options.get("sort", "id"),
                                         options["rules"]) is False:
-            print("ERROR : Wrong parameters for 'sort' option")
+            print("ERROR : Wrong parameters for 'sort' option") # TODO: Error message with wrong parameter
             return False
         #if self.sanitize_keyword_brackets(options.get("filter", "id"),
         #                                options["rules"]) is False:

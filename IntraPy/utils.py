@@ -30,7 +30,6 @@ class Utils(IntraPy):
 
     def get_all_pages(self, str_url, arg):
         achievements = []
-
         while arg.page_index <= arg.page_number:
             response = self.api_get(str(str_url)
                                     + self.get_options(arg)

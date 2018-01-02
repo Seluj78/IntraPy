@@ -38,7 +38,7 @@ class Achievements(IntraPy):
             response = self.api_get("/v2/achievements?page[size]=100"
                                        "&page[number]=" +
                                        str(page_number), "GET")
-            ret = json.loads(response.content)
+            ret = json.loads(response.content)#TODO add condition to stop while, when content is empty
             i = 0
             while i < len(ret):
                 achievements.append(ret[i])

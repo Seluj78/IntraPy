@@ -32,11 +32,11 @@ class IntraPy:
 
     def __init__(self):
         if APP_UID == "None":
-            raise ValueError("APP_UID wasn't found in your settings.ini file.")
+            raise EnvironmentError("APP_UID wasn't found in your settings.ini file.")
         if APP_SECRET == "None":
-            raise ValueError("APP_SECRET wasn't found in your settings.ini file.")
+            raise EnvironmentError("APP_SECRET wasn't found in your settings.ini file.")
         if TOKEN_FILE == "None":
-            raise ValueError("TOKEN_FILE wasn't found in your settings.ini file.")
+            raise EnvironmentError("TOKEN_FILE wasn't found in your settings.ini file.")
         self.app_secret = APP_SECRET
         self.app_uid = APP_UID
         self.token_file = TOKEN_FILE
