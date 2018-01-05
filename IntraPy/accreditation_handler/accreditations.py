@@ -18,44 +18,25 @@
 
 import json
 from IntraPy.IntraPy import IntraPy
+from IntraPy.args import Args
 
 
 class Accreditations(IntraPy):
     def __init__(self):
+        self.rules = []
         super().__init__()
 
-    def get_all_accreditations(self):
-        accreditations = []
-        page_number = 1
-        while page_number <= 1:  # Warning: This number needs to be changed if
-            # the number of accreditations given gets bigger than 100 * 10
-            response = self.api_get("/v2/accreditations?"
-                                                     "page[size]=30&"
-                                                     "page[number]=" +
-                                               str(page_number), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                accreditations.append(ret[i])
-                i += 1
-            page_number = page_number + 1
+    def get_accreditations(self, **options):
+        args = Args()
+        options["rules"] = self.rules
+        if args.hydrate_values(options) is False:
+            raise ValueError("Options couldn't be extracted")
+        accreditations = self.api_get("/v2/accreditations", args, "GET")
+        if options.get("pretty", False):
+            return json.dumps(accreditations, indent=4, sort_keys=True)
         return accreditations
 
-    def get_accreditation_page_number_and_size(self, page_number: int,
-                                               page_size: int):
-        accreditations = []
-        response = self.api_get("/v2/accreditations?page[size]=" +
-                                str(page_size) + "&page[number]=" +
-                                str(page_number), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            accreditations.append(ret[i])
-            i += 1
-        return accreditations
-
-    def get_accreditation_by_id(self, accreditation_id: int):
-        response = self.api_get("/v2/accreditations/" +
-                                str(accreditation_id), "GET")
-        ret = json.loads(response.content)
-        return ret
+    def get_accreditations_by_id(self, accreditation_id: int):
+        response = self.api_get_single("/v2/achievements/" + str(accreditation_id), "GET")
+        accreditation = json.loads(response.content)
+        return accreditation  # TODO: Pretty output possibility

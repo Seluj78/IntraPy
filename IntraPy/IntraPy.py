@@ -109,15 +109,46 @@ class IntraPy:
             file.write(str(self.app_token))
         return self.app_token
 
-    def api_get(self, uri: str, methods="GET"):
+    def api_get(self, uri: str, args, methods="GET"):
         """
         This function will handle all the API requests.
         If the token suddenly expires, this function will call check_token
         and then recursively call itself again until the token works.
 
+        :param args: Arguments passed to the request
         :param uri: The url you want to request from
         :param methods: The method you want to to your API request on. By default, `methods` is set to `GET`
 
+        :return: Returns the response object returned by requests.request()
+        """
+        result = []
+        fixed_parameters = self.get_fixed_parameters(args)
+        h = {'Authorization': 'Bearer ' + self.app_token}
+        while args.from_page <= args.to_page:
+            response = requests.request(methods, "https://api.intra.42.fr" + str(uri) + self.get_changeable_parameters(args) + fixed_parameters, headers=h, allow_redirects=False)
+            try:
+                if response.json()['error'] == "Not authorized":
+                    self.app_token = IntraPy.check_app_token(self)
+                    return IntraPy.api_get(self, uri, args, methods)
+            except:
+                pass
+            ret = json.loads(response.content)
+            if not ret:
+                break
+            i = 0
+            while i < len(ret):
+                result.append(ret[i])
+                i += 1
+            args.from_page += 1
+        return result
+
+    def api_get_single(self, uri: str, methods="GET"):
+        """
+        This function will handle all the API requests that send a single json response back.
+        If the token suddenly expires, this function will call check_token
+        and then recursively call itself again until the token works.
+        :param uri: The url you want to request from
+        :param methods: The method you want to to your API request on. By default, `methods` is set to `GET`
         :return: Returns the response object returned by requests.request()
         """
         h = {'Authorization': 'Bearer ' + self.app_token}
@@ -126,11 +157,23 @@ class IntraPy:
         try:
             if r.json()['error'] == "Not authorized":
                 self.app_token = IntraPy.check_app_token(self)
-                return IntraPy.api_get(self, uri, methods)
+                return IntraPy.api_get_single(self, uri, methods)
         except:
             pass
         return r
 
+    def get_changeable_parameters(self, args):
+        return "?" + "page[number]=" + str(args.from_page)
+
+    def get_fixed_parameters(self, args):
+        fixed_parameters = "&page[size]=" + str(args.page_size)
+        if type(args.sort) == str:
+            fixed_parameters += "&sort=" + str(args.sort)
+        if type(args.filter) == str:
+            fixed_parameters += "&filter" + str(args.filter)
+        #TODO Range
+        return fixed_parameters
+"""
     def get_uid_from_token(self):
         response = self.api_get("/oauth/token/info")
         ret = json.loads(response.content)
@@ -157,3 +200,4 @@ class IntraPy:
         response = self.api_get("/oauth/token/info")
         ret = json.loads(response.content)
         return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ret["created_at"]))
+"""

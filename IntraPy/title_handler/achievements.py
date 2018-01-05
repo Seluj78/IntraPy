@@ -18,14 +18,23 @@
 
 import json
 from IntraPy.IntraPy import IntraPy
+from IntraPy.args import Args
 
 
 class Titles(IntraPy):
     def __init__(self):
+        self.rules = ['id', 'name', 'internal_name', 'kind', 'tier',
+                      'description', 'pedago', 'visible', 'nbr_of_success',
+                      'parent_id', 'image', 'created_at', 'updated_at', 'slug',
+                      'position', 'reward', 'title_id']
         super().__init__()
 
-    def get_all_achievements(self, title_id: int):
-        response = self.api_get("/v2/titles/" + str(title_id)
-                                + "/achievements", "GET")
-        ret = json.loads(response.content)
-        return ret
+    def get_achievements(self, title_id, **options):
+        args = Args()
+        options["rules"] = self.rules
+        if args.hydrate_values(options) is False:
+            raise ValueError("Options couldn't be extracted")
+        achievements = self.api_get("/v2/titles/" + str(title_id) + "/achievements", args, "GET")
+        if options.get("pretty", False):
+            return json.dumps(achievements, indent=4, sort_keys=True)
+        return achievements

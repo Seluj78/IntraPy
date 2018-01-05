@@ -35,17 +35,18 @@ class Args:
     def __init__(self):
         self.page_number = None
         self.page_size = 30
-        self.sort = None #TODO: ADD multiple sorts functionality
-        self.filter = None #TODO: TEST
-        self.range = None # TODO: ADD AND TEST
+        self.sort = None  #TODO: ADD multiple sorts functionality
+        self.filter = None  #TODO: TEST
+        self.range = None  # TODO: ADD AND TEST
         self.from_page = None
         self.to_page = None
+        self.pretty = False
 
     def hydrate_values(self, options):
         self.page_number = options.get("page_number", -1)
         if not isinstance(self.page_number, int):
             raise TypeError("page_number must be an int")
-        if self.page_number > 0: # ICI, page number a la priorite sur to and from pages
+        if self.page_number > 0:  # ICI, page number a la priorite sur to and from pages
             self.from_page = self.page_number
             self.to_page = self.page_number
         else:
@@ -64,35 +65,60 @@ class Args:
             return False
         else:
             self.sort = options.get("sort", False)
-            self.filter = options.get("filter", False)  # TODO check if works
+            self.filter = options.get("filter", False)  # TODO check if works and add error handling
         self.check_keywords(options)
 
-    def check_keywords(self,options):
-        if "rules" not in options: # S'il n'y a pas de regle, l'api de 42 les ignorera =D
+    def check_keywords(self, options):
+        """
+        This function will check if the keywords given to `filter` and `sort` are in the rules
+
+        :param options: The options passed
+        :return: Returns False is any keyword isn't in the authorized rules
+        """
+        # If there isn't any rules, the API will ignore them
+        if "rules" not in options:
             return True
-        if "sort" in options and self.sanitize_keyword_string(options.get("sort", "id"),
-                                        options["rules"]) is False:
-            print("ERROR : Wrong parameters for 'sort' option") # TODO: Error message with wrong parameter
-            return False
-        if "filter" in options and self.sanitize_keyword_brackets(options.get("filter", "id"),
-                                        options["rules"]) is False:
-            print("ERROR : Wrong parameters for 'filter' option")
-            return False
+        if "sort" in options and self.sanitize_keyword_string(options.get("sort", "id"), options["rules"]) is False:
+            raise ValueError("Wrong value for `sort` parameter.")
+        if "filter" in options and self.sanitize_keyword_brackets(options.get("filter", "id"), options["rules"]) is False:
+            raise ValueError("Wrong value for `filter` parameter.")
         return True
 
     def sanitize_keyword_string(self, string, rules):
-        keyword = string.split(',') # cree une liste de chaque mot
+        """
+        This function will split the `sort` string `string` into keyword and compare
+        each one to the given rules.
+
+        :param string: The string to split into keywords
+        :param rules: The rules authorized
+        :return: Returns `False` if the sort options aren't in rules
+        """
+        if not isinstance(string, str):  # TODO: Change this when handling multiple sorts
+            raise ValueError("sort must be a String")
+        # Create a list (with separator `'`)containing each word
+        keyword = string.split(',')
+        # Remove `-` before comparison
         for i, s in enumerate(keyword):
-            keyword[i] = re.sub(r'-', '', s) #enleve les '-' avant la comparaison
+            keyword[i] = re.sub(r'-', '', s)
+        # Compare each Keyword with the rules
         return self.compare_with_rules(rules, keyword)
 
     def sanitize_keyword_brackets(self, string, rules):
+        """
+        This function will split the `filter` string `string` into keyword and compare
+        each one to the given rules.
+
+        :param string: The string to split into keywords
+        :param rules: The rules authorized
+        :return: Returns `False` if the filter options aren't in rules
+        """
         keyword = re.match(r"\[(.*?)\]", string)
         if keyword is None:
             print("ERROR : filter bad format")
             return False
         keyword = keyword.groups()
         return self.compare_with_rules(rules, keyword)
+# TODO: Range
 
     def compare_with_rules(self, rules, keyword):
         """
