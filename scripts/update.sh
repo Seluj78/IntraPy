@@ -13,7 +13,8 @@ fi
 echo "The old version was: $old"
 
 echo "You want to update to $1"
-read -p "Are you sure that is the right version number? " -n 1 -r # TODO: Add a check to be sure that $1 is formatted a X.Y.Z
+ # @todo Add a check to be sure that $1 is formatted a X.Y.Z
+read -p "Are you sure that is the right version number? " -n 1 -r
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
@@ -23,18 +24,21 @@ if [[ ! $(grep -q "$1" setup.py && echo $?) ]]
 then
 	echo $1
     sed -i '' 's/'"$old"'/'"$1"'/g' setup.py
-    echo "Error: $1 not found in setup.py. I just replaced it, please commit and push then start this script again" # TODO: Auto commit/push
+     # @todo Auto commit/push
+    echo "Error: $1 not found in setup.py. I just replaced it, please commit and push then start this script again"
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 echo
 if [[ ! $(grep -q "$1" IntraPy/__init__.py && echo $?) ]]
 then
     sed -i '' 's/'"$old"'/'"$1"'/g' IntraPy/__init__.py
-    echo "Error: $1 not found in IntraPy/__init__.py. I just replaced it, please commit and push then start this script again" # TODO: Auto commit/push
+    # @todo Auto commit/push
+    echo "Error: $1 not found in IntraPy/__init__.py. I just replaced it, please commit and push then start this script again"
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 
-echo "\n\nDid you commit and pushed your last changes ? The last commit found is:" # TODO: Check if commit is pushed
+# @todo: Auto check if pushed
+echo "\n\nDid you commit and pushed your last changes ? The last commit found is:"
 git log | head -n 5
 read -p "Is that ok? " -n 1 -r
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -66,9 +70,11 @@ else
     git tag $1 $user_commit_message
 fi
 
+# @todo Darwin-Linux compatibility
+# @body The pythonic way to push into PyPi is different between macosX and Linux.
+
 git push --tags origin master
 python setup.py register sdist upload
-# TODO some error to be fixed, doesnt work on linux or mac os one of them
 
 
 

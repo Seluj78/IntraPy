@@ -33,20 +33,8 @@ class Args:
 
     options = {}
 
-    """
-    @todo Add multiple sorts
-    @body Multiple sort parameters isn't handled, eg. `sort="one"&sort="two"`
-    """
-
-    """
-    @todo Test the filter option
-    @body We haven't tested enough if the filter option works as intended
-    """
-
-    """
-        @todo Add 'range' handling
-        @body The `range` option isn't currently handled
-    """
+# @todo Add 'range' handling
+# @body The `range` option isn't currently handled
 
     def __init__(self):
         self.page_number = None
@@ -59,10 +47,8 @@ class Args:
         self.pretty = False
 
 
-    """
-    @todo Check if the option.get('filter') works correctly
-    @body further test and error handling is needed on `self.filter = options.get("filter", False)`
-    """
+# @todo Check if the option.get('filter') works correctly
+# @body further test and error handling is needed on `self.filter = options.get("filter", False)`
 
     def hydrate_values(self, options):
         self.page_number = options.get("page_number", -1)
@@ -115,7 +101,11 @@ class Args:
         :param rules: The rules authorized
         :return: Returns `False` if the sort options aren't in rules
         """
-        if not isinstance(string, str):  # TODO: Change this when handling multiple sorts
+
+        # @todo Add multiple sorts
+        # @body Multiple sort parameters isn't handled, eg. `sort="one"&sort="two"`
+
+        if not isinstance(string, str):
             raise ValueError("sort must be a String")
         # Create a list (with separator `'`)containing each word
         keyword = string.split(',')
@@ -134,13 +124,15 @@ class Args:
         :param rules: The rules authorized
         :return: Returns `False` if the filter options aren't in rules
         """
+        # @todo Test the filter option
+        # @body We haven't tested enough if the filter option works as intended
+
         keyword = re.match(r"\[(.*?)\]", string)
         if keyword is None:
             print("ERROR : filter bad format")
             return False
         keyword = keyword.groups()
         return self.compare_with_rules(rules, keyword)
-# TODO: Range
 
     def compare_with_rules(self, rules, keyword):
         """

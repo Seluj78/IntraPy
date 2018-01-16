@@ -6,3 +6,6 @@ requestInfoReplyComment: >
 
 # *OPTIONAL* Label to be added to Issues and Pull Requests with insufficient information given
 requestInfoLabelToAdd: needs-more-info
+
+todo:
+  blobLines: 10
