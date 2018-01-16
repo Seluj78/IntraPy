@@ -39,10 +39,15 @@ class Achievements(IntraPy):
             return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements
 
+    """
+    @todo Add 'pretty' option
+    @body The pretty option isn't possible in get_achievements_by_id and should be
+    """
+
     def get_achievements_by_id(self, achievement_id: int):
         response = self.api_get_single("/v2/achievements/" + str(achievement_id), "GET")
         ret = json.loads(response.content)
-        return ret  # TODO: Pretty output possibility
+        return ret
 
     def get_achievements_cursus(self, cursus_id, **options):
         args = Args()

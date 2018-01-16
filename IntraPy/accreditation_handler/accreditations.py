@@ -36,7 +36,12 @@ class Accreditations(IntraPy):
             return json.dumps(accreditations, indent=4, sort_keys=True)
         return accreditations
 
+    """
+    @todo Add 'pretty' option
+    @body The pretty option isn't possible in get_accreditations_by_id and should be
+    """
+
     def get_accreditations_by_id(self, accreditation_id: int):
         response = self.api_get_single("/v2/achievements/" + str(accreditation_id), "GET")
         accreditation = json.loads(response.content)
-        return accreditation  # TODO: Pretty output possibility
+        return accreditation

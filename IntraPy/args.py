@@ -30,17 +30,39 @@ class Args:
         Else, it will do all the pages until return is empty
 
     """
+
     options = {}
+
+    """
+    @todo Add multiple sorts
+    @body Multiple sort parameters isn't handled, eg. `sort="one"&sort="two"`
+    """
+
+    """
+    @todo Test the filter option
+    @body We haven't tested enough if the filter option works as intended
+    """
+
+    """
+        @todo Add 'range' handling
+        @body The `range` option isn't currently handled
+    """
 
     def __init__(self):
         self.page_number = None
         self.page_size = 30
-        self.sort = None  #TODO: ADD multiple sorts functionality
-        self.filter = None  #TODO: TEST
-        self.range = None  # TODO: ADD AND TEST
+        self.sort = None
+        self.filter = None
+        self.range = None
         self.from_page = None
         self.to_page = None
         self.pretty = False
+
+
+    """
+    @todo Check if the option.get('filter') works correctly
+    @body further test and error handling is needed on `self.filter = options.get("filter", False)`
+    """
 
     def hydrate_values(self, options):
         self.page_number = options.get("page_number", -1)
@@ -65,7 +87,7 @@ class Args:
             return False
         else:
             self.sort = options.get("sort", False)
-            self.filter = options.get("filter", False)  # TODO check if works and add error handling
+            self.filter = options.get("filter", False)
         self.check_keywords(options)
 
     def check_keywords(self, options):
