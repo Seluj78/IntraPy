@@ -1,5 +1,4 @@
-Requests is written and maintained by Jules Lasne and
-various contributors:
+IntraPy is written and maintained by Jules Lasne and various contributors:
 
 Core Contributors
 ````````````````````````````
