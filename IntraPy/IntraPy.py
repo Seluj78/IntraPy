@@ -193,37 +193,54 @@ class IntraPy:
             fixed_parameters += "&filter" + str(args.filter)
         return fixed_parameters
 
-
-"""
-    @todo Refactor utility token info methods
-    @body these functions are deprecated and needs to be refactored 
-"""
-
-"""
     def get_uid_from_token(self):
-        response = self.api_get("/oauth/token/info")
+        """
+        This function will return the uid of the token from /oauth/token/info
+
+        :return: Returns the uid in a string form
+        """
+        response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return ret["application"]["uid"]
 
     def get_token_expire_time_in_seconds(self):
-        response = self.api_get("/oauth/token/info")
+        """
+        This function will return in how many seconds will the token expire
+
+        :return: Return the time in seconds of when the token will expire
+        """
+        response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return ret["expires_in_seconds"]
 
     def get_token_expire_time(self):
-        response = self.api_get("/oauth/token/info")
+        """
+        This function will return in hours:minutes:seconds the time of expiry of the token
+
+        :return: Returns a string formated in h:m:s
+        """
+        response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         m, s = divmod(ret["expires_in_seconds"], 60)
         h, m = divmod(m, 60)
         return "%d:%02d:%02d" % (h, m, s)
 
     def get_token_creation_epoch(self):
-        response = self.api_get("/oauth/token/info")
+        """
+        This function will return the epoch time of creation of the token
+
+        :return: Returns a string containing the epoch creation time
+        """
+        response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return ret["created_at"]
 
     def get_token_creation_date(self):
-        response = self.api_get("/oauth/token/info")
+        """
+        This function will return the date and time of creation for the token
+
+        :return: It will return a string in form of `YYYY-MM-DD hh-mm-ss`
+        """
+        response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ret["created_at"]))
-"""
