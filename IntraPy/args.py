@@ -26,7 +26,10 @@ class Args:
     """
 
 
-
+    """
+        @todo Add option priority explaination in the wiki
+        @body If page_number is explicitely set through options when calling test_get, then the return will be the page PAGE_NUMBER. If from_page and to_page are set, it will loop through them Else, it will do all the pages until return is empty. priority on page_number. 1800 requetes max pour to_page car 1800 requete en limite de l'api. a tester
+    """
 
     options = {}
 
@@ -72,7 +75,10 @@ class Args:
             self.from_page = options.get("from_page", 1)
             if not isinstance(self.from_page, int):
                 raise TypeError("from_page must be an int")
-
+            """
+            @todo Test 1800 limit for to_page
+            @body the `to_page` variable has a 1800 limit set because of the api limtation. it needs to be correctly tested.
+            """
             self.to_page = options.get("to_page", 1800)
             if not isinstance(self.to_page, int):
                 raise TypeError("to_page must be an int")
