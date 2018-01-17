@@ -22,11 +22,26 @@ from IntraPy.args import Args
 
 
 class Accreditations(IntraPy):
+    """
+    This class handles all the accreditations that can be returned through
+    the 42 API
+    """
     def __init__(self):
+        """
+        Here, we simply initialize the parent class to have a simple access to
+        other functions
+        """
         self.rules = []
         super().__init__()
 
     def get_accreditations(self, **options):
+        """
+        This function will return all the accreditations, unless parameters
+        specify otherwise like `page_number` or `from_page` and `to_page`999
+
+        :param options: The kwargs options that can be passed paginate the accreditations
+        :return: Returns a json list containing the requested accreditations
+        """
         args = Args()
         options["rules"] = self.rules
         if args.hydrate_values(options) is False:
@@ -36,10 +51,17 @@ class Accreditations(IntraPy):
             return json.dumps(accreditations, indent=4, sort_keys=True)
         return accreditations
 
-# @todo Add 'pretty' option
-# @body The pretty option isn't possible in get_accreditations_by_id and should be
+    def get_accreditations_by_id(self, accreditation_id: int, pretty=False):
+        """
+        This function will return all the info sent by the API about
+        the accreditation ID
+        :param accreditation_id: The ID of the accreditation you want the ID from
+        :param pretty: By default is set to False, this pretties up the output if printed
 
-    def get_accreditations_by_id(self, accreditation_id: int):
+        :return: Returns a list in json form containing the requested accreditation
+        """
         response = self.api_get_single("/v2/achievements/" + str(accreditation_id), "GET")
         accreditation = json.loads(response.content)
+        if pretty:
+            return json.dumps(accreditation, indent=4, sort_keys=True)
         return accreditation
