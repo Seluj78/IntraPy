@@ -78,6 +78,7 @@ class IntraPy:
     def get_token_from_file(self):
         """
         This function will get from the TOKEN_FILE file the first line
+
         :return: Returns the first line of the token file containing the
         app token.
         """
@@ -147,8 +148,10 @@ class IntraPy:
         This function will handle all the API requests that send a single json response back.
         If the token suddenly expires, this function will call check_token
         and then recursively call itself again until the token works.
+
         :param uri: The url you want to request from
         :param methods: The method you want to to your API request on. By default, `methods` is set to `GET`
+
         :return: Returns the response object returned by requests.request()
         """
         h = {'Authorization': 'Bearer ' + self.app_token}
@@ -163,15 +166,39 @@ class IntraPy:
         return r
 
     def get_changeable_parameters(self, args):
+        """
+        This will create and return the string with the parameter that will
+        change regularly (the page)
+
+        :param args: The arguments used to get the `from_page` variable
+
+        :return: Returns a string that is appened to the url sent to the api
+        """
         return "?" + "page[number]=" + str(args.from_page)
 
     def get_fixed_parameters(self, args):
+        """
+        This function will add the strings together to form the part of the url
+        where it wont change. This part of the url contains the sorts,
+        filters etc...
+
+        :param args: The arguments to add in the url
+
+        :return: Returns a string that is appened to the url sent to the api
+        """
         fixed_parameters = "&page[size]=" + str(args.page_size)
         if type(args.sort) == str:
             fixed_parameters += "&sort=" + str(args.sort)
         if type(args.filter) == str:
             fixed_parameters += "&filter" + str(args.filter)
         return fixed_parameters
+
+
+"""
+    @todo Refactor utility token info methods
+    @body these functions are deprecated and needs to be refactored 
+"""
+
 """
     def get_uid_from_token(self):
         response = self.api_get("/oauth/token/info")

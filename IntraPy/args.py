@@ -21,14 +21,14 @@ import re
 
 class Args:
     """
-        This will be the class for Argument handling
-        TODO: Extended documentation
+        This class here handles the arguments.
         TODO: Better error handling and error messages
+    """
 
-        If page_number is explicitely set through options when calling test_get, then the return will be the page PAGE_NUMBER.
-        If from_page and to_page are set, it will loop through them
-        Else, it will do all the pages until return is empty
 
+    """
+        @todo Add option priority explaination in the wiki
+        @body If page_number is explicitely set through options when calling test_get, then the return will be the page PAGE_NUMBER. If from_page and to_page are set, it will loop through them Else, it will do all the pages until return is empty. priority on page_number. 1800 requetes max pour to_page car 1800 requete en limite de l'api. a tester
     """
 
     options = {}
@@ -39,6 +39,10 @@ class Args:
     """
 
     def __init__(self):
+        """
+        Here, we define default value for each variable that can be passed
+        to the kwargs
+        """
         self.page_number = None
         self.page_size = 30
         self.sort = None
@@ -54,17 +58,28 @@ class Args:
     """
 
     def hydrate_values(self, options):
+        """
+        This function will get from the options passed their values, and if
+        they aren't correct, it will throw an error
+
+        :param options: The options passed
+        :return: Returns False if an error occurs
+        """
         self.page_number = options.get("page_number", -1)
         if not isinstance(self.page_number, int):
             raise TypeError("page_number must be an int")
-        if self.page_number > 0:  # ICI, page number a la priorite sur to and from pages
+        if self.page_number > 0:
             self.from_page = self.page_number
             self.to_page = self.page_number
         else:
             self.from_page = options.get("from_page", 1)
             if not isinstance(self.from_page, int):
                 raise TypeError("from_page must be an int")
-            self.to_page = options.get("to_page", 1800)  # 1800 pour 1800 active requests max dans l'api
+            """
+            @todo Test 1800 limit for to_page
+            @body the `to_page` variable has a 1800 limit set because of the api limtation. it needs to be correctly tested.
+            """
+            self.to_page = options.get("to_page", 1800)
             if not isinstance(self.to_page, int):
                 raise TypeError("to_page must be an int")
         self.page_size = options.get("page_size", 30)
@@ -81,12 +96,12 @@ class Args:
 
     def check_keywords(self, options):
         """
-        This function will check if the keywords given to `filter` and `sort` are in the rules
+        This function will check if the keywords given to `filter` and `sort`
+        are in the ruleset.
 
         :param options: The options passed
         :return: Returns False is any keyword isn't in the authorized rules
         """
-        # If there isn't any rules, the API will ignore them
         if "rules" not in options:
             return True
         if "sort" in options and self.sanitize_keyword_string(options.get("sort", "id"), options["rules"]) is False:
@@ -97,8 +112,8 @@ class Args:
 
     def sanitize_keyword_string(self, string, rules):
         """
-        This function will split the `sort` string `string` into keyword and compare
-        each one to the given rules.
+        This function will split the `sort` string `string` into keyword and
+        compare each one to the given rules.
 
         :param string: The string to split into keywords
         :param rules: The rules authorized
@@ -112,18 +127,15 @@ class Args:
 
         if not isinstance(string, str):
             raise ValueError("sort must be a String")
-        # Create a list (with separator `'`)containing each word
         keyword = string.split(',')
-        # Remove `-` before comparison
         for i, s in enumerate(keyword):
             keyword[i] = re.sub(r'-', '', s)
-        # Compare each Keyword with the rules
         return self.compare_with_rules(rules, keyword)
 
     def sanitize_keyword_brackets(self, string, rules):
         """
-        This function will split the `filter` string `string` into keyword and compare
-        each one to the given rules.
+        This function will split the `filter` string `string` into keyword and
+        compare each one to the given rules.
 
         :param string: The string to split into keywords
         :param rules: The rules authorized

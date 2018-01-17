@@ -18,7 +18,6 @@
 
 from decouple import config
 
-# 42 API Variables
 """
     Those lines here will get the values from the .env/.ini file
     APP_UID: The app uid given by 42
