@@ -22,7 +22,15 @@ from IntraPy.args import Args
 
 
 class Achievements(IntraPy):
+    """
+    This class handles all the achievements that can be retrieved through the
+    42 API
+    """
     def __init__(self):
+        """
+        Here, we initializes the parent class and creates a rule which contains
+        all the sort/range/filter possibilities
+        """
         self.rules = ['id', 'name', 'internal_name', 'kind', 'tier',
                       'description', 'pedago', 'visible', 'nbr_of_success',
                       'parent_id', 'image', 'created_at', 'updated_at', 'slug',
@@ -30,6 +38,14 @@ class Achievements(IntraPy):
         super().__init__()
 
     def get_achievements(self, **options):
+        """
+        This function will return all the achievements, unless parameters
+        specify otherwise like `page_number` or `from_page` and `to_page`,
+        or `sort` etc...
+
+        :param options: The kwargs options that can be passed paginate/sort/filter/range the achievements
+        :return: Returns a json list containing the requested achievements
+        """
         args = Args()
         options["rules"] = self.rules
         if args.hydrate_values(options) is False:
@@ -39,17 +55,31 @@ class Achievements(IntraPy):
             return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements
 
-    """
-    @todo Add 'pretty' option
-    @body The pretty option isn't possible in get_achievements_by_id and should be
-    """
+    def get_achievements_by_id(self, achievement_id: int, pretty=False):
+        """
+        This function will return all the info sent by the API about
+        the achievements ID
+        :param achievement_id: The ID of the achievements you want the ID from
+        :param pretty: By default is set to False, this pretties up the output if printed
 
-    def get_achievements_by_id(self, achievement_id: int):
+        :return: Returns a list in json form containing the requested achievement
+        """
         response = self.api_get_single("/v2/achievements/" + str(achievement_id), "GET")
-        ret = json.loads(response.content)
-        return ret
+        achievement = json.loads(response.content)
+        if pretty:
+            return json.dumps(achievement, indent=4, sort_keys=True)
+        return achievement
 
     def get_achievements_cursus(self, cursus_id, **options):
+        """
+        This function will return all the achievements from a given cursus,
+        unless parameters specify otherwise like `page_number` or `from_page`
+        and `to_page`, or `sort` etc...
+
+        :param cursus_id: The cursus ID you want your achievements from
+        :param options: The kwargs options that can be passed paginate/sort/filter/range the achievements
+        :return: Returns a json list containing the requested achievements
+        """
         args = Args()
         options["rules"] = self.rules
         if args.hydrate_values(options) is False:
@@ -60,6 +90,15 @@ class Achievements(IntraPy):
         return achievements
 
     def get_achievements_campus(self, campus_id, **options):
+        """
+        This function will return all the achievements from a given campus,
+        unless parameters specify otherwise like `page_number` or `from_page`
+        and `to_page`, or `sort` etc...
+
+        :param campus_id: The campus ID you want your achievements from
+        :param options: The kwargs options that can be passed paginate/sort/filter/range the achievements
+        :return: Returns a json list containing the requested achievements
+        """
         args = Args()
         options["rules"] = self.rules
         if args.hydrate_values(options) is False:
