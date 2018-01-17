@@ -201,7 +201,7 @@ class IntraPy:
         """
         response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
-        return ret["application"]["uid"]
+        return str(ret["application"]["uid"])
 
     def get_token_expire_time_in_seconds(self):
         """
@@ -211,7 +211,7 @@ class IntraPy:
         """
         response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
-        return ret["expires_in_seconds"]
+        return str(ret["expires_in_seconds"])
 
     def get_token_expire_time(self):
         """
@@ -223,7 +223,7 @@ class IntraPy:
         ret = json.loads(response.content)
         m, s = divmod(ret["expires_in_seconds"], 60)
         h, m = divmod(m, 60)
-        return "%d:%02d:%02d" % (h, m, s)
+        return str("%d:%02d:%02d" % (h, m, s))
 
     def get_token_creation_epoch(self):
         """
@@ -233,7 +233,7 @@ class IntraPy:
         """
         response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
-        return ret["created_at"]
+        return str(ret["created_at"])
 
     def get_token_creation_date(self):
         """
@@ -243,4 +243,4 @@ class IntraPy:
         """
         response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
-        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ret["created_at"]))
+        return str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ret["created_at"])))
