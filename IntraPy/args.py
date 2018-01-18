@@ -105,9 +105,9 @@ class Args:
         if "rules" not in options:
             return True
         if "sort" in options and self.sanitize_keyword_string(options.get("sort", "id"), options["rules"]) is False:
-            raise ValueError("Wrong value for `sort` parameter.")
+            raise ValueError("Wrong value for `sort` parameter: '" + options.get("sort", "id") + "'")
         if "filter" in options and self.sanitize_keyword_brackets(options.get("filter", "id"), options["rules"]) is False:
-            raise ValueError("Wrong value for `filter` parameter.")
+            raise ValueError("Wrong value for `filter` parameter: '" + options.get("filter", "id") + "'")
         return True
 
     def sanitize_keyword_string(self, string, rules):
