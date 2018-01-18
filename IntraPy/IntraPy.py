@@ -191,6 +191,8 @@ class IntraPy:
             fixed_parameters += "&sort=" + str(args.sort)
         if type(args.filter) == str:
             fixed_parameters += "&filter" + str(args.filter)
+        if type(args.range) == str:
+            fixed_parameters += "&range" + str(args.range)
         return fixed_parameters
 
     def get_uid_from_token(self):

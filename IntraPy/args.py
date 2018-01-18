@@ -52,11 +52,6 @@ class Args:
         self.to_page = None
         self.pretty = False
 
-    """
-        @todo Check if the option.get('filter') works correctly
-        @body further test and error handling is needed on `self.filter = options.get("filter", False)`
-    """
-
     def hydrate_values(self, options):
         """
         This function will get from the options passed their values, and if
@@ -92,6 +87,7 @@ class Args:
         else:
             self.sort = options.get("sort", False)
             self.filter = options.get("filter", False)
+            self.range = options.get("range", False)
         self.check_keywords(options)
 
     def check_keywords(self, options):
@@ -108,6 +104,11 @@ class Args:
             raise ValueError("Wrong value for `sort` parameter: '" + options.get("sort", "id") + "'")
         if "filter" in options and self.sanitize_keyword_brackets(options.get("filter", "id"), options["rules"]) is False:
             raise ValueError("Wrong value for `filter` parameter: '" + options.get("filter", "id") + "'")
+        if "range" in options and self.sanitize_keyword_range(options.get("range", "id"), options["rules"]) is False:
+            """
+            @todo Shorten error messages
+            """
+            raise ValueError("Wrong value for `range` parameter: '" + options.get("range", "id")[options.get("range", "id").find("[") + 1:options.get("range", "id").find("]")] + "'")
         return True
 
     def sanitize_keyword_string(self, string, rules):
@@ -142,17 +143,41 @@ class Args:
         :return: Returns `False` if the filter options aren't in rules
         """
 
-        """
-            @todo Test the filter option
-            @body We haven't tested enough if the filter option works as intended
-        """
-
         keyword = re.match(r"\[(.*?)\]", string)
         if keyword is None:
             print("ERROR : filter bad format")
             return False
         keyword = keyword.groups()
         return self.compare_with_rules(rules, keyword)
+
+    def sanitize_keyword_range(self, string, rules):
+        """
+        This will check that the range option works correctly, and that the
+        values passed are correct and ints
+        Here, we aren't calling compare_with_rules because range doesn't get keywords but values
+
+        :param string: The string containing the options for range
+        :param rules: The ruleset
+
+        :return: Returns True if everything is ok, False otherwise
+        """
+        range_asked = string[string.find("[") + 1:string.find("]")]
+        if range_asked not in rules:
+            return False
+        second = string.split(",")[1]
+        first = string.split(",")[0].split("=")[1]
+        if not self.is_an_int(first):
+            raise ValueError("Error: First parameter for range parameter isn't an int")
+        if not self.is_an_int(second):
+            raise ValueError("Error: Second parameter for range parameter isn't an int")
+        return True
+
+    def is_an_int(self, s):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
 
     def compare_with_rules(self, rules, keyword):
         """
