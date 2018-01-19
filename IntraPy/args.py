@@ -33,11 +33,6 @@ class Args:
 
     options = {}
 
-    """
-        @todo Add 'range' handling
-        @body The `range` option isn't currently handled
-    """
-
     def __init__(self):
         """
         Here, we define default value for each variable that can be passed
