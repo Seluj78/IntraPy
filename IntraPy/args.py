@@ -143,12 +143,14 @@ class Args:
         :return: Returns `False` if the filter options aren't in rules
         """
 
-        keyword = re.match(r"\[(.*?)\]", string)
-        if keyword is None:
-            print("ERROR : filter bad format")
+        filter_asked = string[string.find("[") + 1:string.find("]")]
+        if filter_asked not in rules:
             return False
-        keyword = keyword.groups()
-        return self.compare_with_rules(rules, keyword)
+        filters = string.split("=")[1]
+        if self.are_ranges_ints(filters):
+            return True
+        else:
+            raise ValueError("Error: One parameter for range isn't an string or it isn't in the rules")
 
     def sanitize_keyword_range(self, string, rules):
         """
@@ -172,6 +174,9 @@ class Args:
             raise ValueError("Error: Second parameter for range parameter isn't an int")
         return True
 
+    def are_ranges_ints(self, strg, search=re.compile(r'[^a-z0-9,]').search):
+        return not bool(search(strg))
+
     def is_an_int(self, s):
         try:
             int(s)
@@ -179,15 +184,15 @@ class Args:
         except ValueError:
             return False
 
-    def compare_with_rules(self, rules, keyword):
+    def compare_with_rules(self, rules, keywords):
         """
         This function will test `keyword` against every entry of the list `rules`.
 
         :param rules: Rules list containing all authorized rules
-        :param keyword: The keyword to test
-        :return: If `keyword` isn't found, `False` is returned. `True` otherwise
+        :param keywords: The keywords to test
+        :return: If `keywords` isn't found, `False` is returned. `True` otherwise
         """
-        for i, s in enumerate(keyword):
+        for i, s in enumerate(keywords):
             if s not in rules:
                 return False
         return True
