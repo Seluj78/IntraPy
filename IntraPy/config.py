@@ -18,7 +18,12 @@
 
 from decouple import config
 
-# 42 API Variables
+"""
+    Those lines here will get the values from the .env/.ini file
+    APP_UID: The app uid given by 42
+    APP_SECRET: the app secret given by 42
+    TOKEN_FILE: The filename you want your token to be stored in
+"""
 APP_UID = config('APP_UID', cast=str, default = None)
 APP_SECRET = config('APP_SECRET', cast=str, default=None)
 TOKEN_FILE = config('TOKEN_FILE', cast=str, default=None)

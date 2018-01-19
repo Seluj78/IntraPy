@@ -18,259 +18,92 @@
 
 import json
 from IntraPy.IntraPy import IntraPy
+from IntraPy.args import Args
 
 
 class Achievements(IntraPy):
+    """
+    This class handles all the achievements that can be retrieved through the
+    42 API
+    """
     def __init__(self):
+        """
+        Here, we initializes the parent class and creates a rule which contains
+        all the sort/range/filter possibilities
+        """
+        self.rules = ['id', 'name', 'internal_name', 'kind', 'tier',
+                      'description', 'pedago', 'visible', 'nbr_of_success',
+                      'parent_id', 'image', 'created_at', 'updated_at', 'slug',
+                      'position', 'reward', 'title_id']
         super().__init__()
 
-    def by_id(self, achievement_id: int):
-        response = self.api_get("/v2/achievements/" +
-                                str(achievement_id), "GET")
-        ret = json.loads(response.content)
-        return ret
+    def get_achievements(self, **options):
+        """
+        This function will return all the achievements, unless parameters
+        specify otherwise like `page_number` or `from_page` and `to_page`,
+        or `sort` etc...
 
-    def get_all(self):
-        achievements = []
-        page_number = 1
-        while page_number <= 3:  # TODO: Change this matching to the number of
-            # achievements availables
-            response = self.api_get("/v2/achievements?page[size]=100"
-                                       "&page[number]=" +
-                                       str(page_number), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
+        :param options: The kwargs options that can be passed paginate/sort/filter/range the achievements
+        :return: Returns a json list containing the requested achievements
+        """
+        args = Args()
+        options["rules"] = self.rules
+        if args.hydrate_values(options) is False:
+            raise ValueError("Options couldn't be extracted")
+        achievements = self.api_get("/v2/achievements", args, "GET")
+        if options.get("pretty", False):
+            return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements
 
-    def get_all_cursus(self, cursus_id: int):
-        achievements = []
-        page_number = 1
-        while page_number <= 3:  # TODO: Change this matching to the number of
-            # achievements availables
-            response = self.api_get("/v2/cursus/" + str(cursus_id)
-                                       + "/achievements?page[size]=100"
-                                         "&page[number]=" + str(page_number),
-                                       "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
+    def get_achievements_by_id(self, achievement_id: int, pretty=False):
+        """
+        This function will return all the info sent by the API about
+        the achievements ID
+        :param achievement_id: The ID of the achievements you want the ID from
+        :param pretty: By default is set to False, this pretties up the output if printed
+
+        :return: Returns a list in json form containing the requested achievement
+        """
+        response = self.api_get_single("/v2/achievements/" + str(achievement_id), "GET")
+        achievement = json.loads(response.content)
+        if pretty:
+            return json.dumps(achievement, indent=4, sort_keys=True)
+        return achievement
+
+    def get_achievements_cursus(self, cursus_id, **options):
+        """
+        This function will return all the achievements from a given cursus,
+        unless parameters specify otherwise like `page_number` or `from_page`
+        and `to_page`, or `sort` etc...
+
+        :param cursus_id: The cursus ID you want your achievements from
+        :param options: The kwargs options that can be passed paginate/sort/filter/range the achievements
+        :return: Returns a json list containing the requested achievements
+        """
+        args = Args()
+        options["rules"] = self.rules
+        if args.hydrate_values(options) is False:
+            raise ValueError("Options couldn't be extracted")
+        achievements = self.api_get("/v2/cursus/" + str(cursus_id) + "/achievements", args, "GET")
+        if options.get("pretty", False):
+            return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements
 
-    def get_all_campus(self, campus_id: int):
-        achievements = []
-        page_number = 1
-        while page_number <= 3:  # TODO: Change this matching to the number of
-            # achievements availables
-            response = self.api_get("/v2/campus/" + str(campus_id)
-                                       + "/achievements?page[size]=100"
-                                         "&page[number]=" + str(page_number),
-                                       "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
-        return achievements
+    def get_achievements_campus(self, campus_id, **options):
+        """
+        This function will return all the achievements from a given campus,
+        unless parameters specify otherwise like `page_number` or `from_page`
+        and `to_page`, or `sort` etc...
 
-    def filter(self, filter_name: str, value: str):
-        achievements = []
-        page_number = 1
-        available_filters = ["id", "name", "internal_name", "kind", "tier",
-                             "description", "pedago", "visible",
-                             "nbr_of_success",
-                             "parent_id", "image", "created_at", "updated_at",
-                             "slug", "position", "reward", "title_id"]
-        if filter_name not in available_filters:
-            print("Error: the `filter' parameter given to "
-                  "get_all_achievements_sorted isn't recognised")
-            return
-        while page_number <= 3:  # TODO: Warning: This number might need to change
-            response = self.api_get("/v2/achievements?page[size]=100&"
-                                       "page[number]=" + str(page_number)
-                                       + "&filter[" + str(filter_name) + "]="
-                                       + str(value), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
-        return achievements
-
-    def campus_with_filter(self, filter_name: str, value: str, campus_id: int):
-        achievements = []
-        page_number = 1
-        available_filters = ["id", "name", "internal_name", "kind", "tier",
-                             "description", "pedago", "visible",
-                             "nbr_of_success",
-                             "parent_id", "image", "created_at", "updated_at",
-                             "slug", "position", "reward", "title_id"]
-        if filter_name not in available_filters:
-            print("Error: the `filter' parameter given to "
-                  "get_all_achievements_sorted isn't recognised")
-            return
-        while page_number <= 3:  # TODO: Warning: This number might need to change
-            response = self.api_get("/v2/campus/" + str(campus_id)
-                                       + "/achievements?page[size]=100"
-                                         "&page[number]=" + str(page_number)
-                                       + "&filter[" + str(filter_name) + "]="
-                                       + str(value), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
-        return achievements
-
-    def cursus_with_filter(self, filter_name: str, value: str, cursus_id: int):
-        achievements = []
-        page_number = 1
-        available_filters = ["id", "name", "internal_name", "kind", "tier",
-                             "description", "pedago", "visible",
-                             "nbr_of_success",
-                             "parent_id", "image", "created_at", "updated_at",
-                             "slug", "position", "reward", "title_id"]
-        if filter_name not in available_filters:
-            print("Error: the `filter' parameter given to "
-                  "get_all_achievements_sorted isn't recognised")
-            return
-        while page_number <= 3:  # TODO: Warning: This number might need to change
-            response = self.api_get("/v2/cursus/" + str(cursus_id)
-                                       + "/achievements?page[size]=100"
-                                         "&page[number]=" + str(page_number)
-                                       + "&filter[" + str(filter_name) + "]="
-                                       + str(value), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
-        return achievements
-
-    def sort(self, sort: str):
-        achievements = []
-        page_number = 1
-        available_sorts = ["id", "name", "internal_name", "kind", "tier",
-                           "description", "pedago", "visible", "nbr_of_success",
-                           "parent_id", "image", "created_at", "updated_at",
-                           "slug",
-                           "position", "reward", "title_id"]
-        if sort not in available_sorts:
-            print(
-                "Error: the `sort' parameter given to get_all_achievements_sorted"
-                " isn't recognised")
-            return
-        while page_number <= 3:  # TODO: Warning: This number might need to change
-            response = self.api_get("/v2/achievements?page[size]=100&"
-                                       "page[number]=" + str(page_number)
-                                       + "&sort=" + str(sort), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
-        return achievements
-
-    def campus_sort(self, sort: str, campus_id: int):
-        achievements = []
-        page_number = 1
-        available_sorts = ["id", "name", "internal_name", "kind", "tier",
-                           "description", "pedago", "visible", "nbr_of_success",
-                           "parent_id", "image", "created_at", "updated_at",
-                           "slug",
-                           "position", "reward", "title_id"]
-        if sort not in available_sorts:
-            print(
-                "Error: the `sort' parameter given to get_all_achievements_sorted"
-                " isn't recognised")
-            return
-        while page_number <= 3:  # TODO: Warning: This number might need to change
-            response = self.api_get("/v2/campus/" + str(campus_id)
-                                       + "/achievements?page[size]=100"
-                                         "&page[number]=" + str(page_number)
-                                       + "&sort=" + str(sort), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
-        return achievements
-
-    def cursus_sort(self, sort: str, cursus_id: int):
-        achievements = []
-        page_number = 1
-        available_sorts = ["id", "name", "internal_name", "kind", "tier",
-                           "description", "pedago", "visible", "nbr_of_success",
-                           "parent_id", "image", "created_at", "updated_at",
-                           "slug",
-                           "position", "reward", "title_id"]
-        if sort not in available_sorts:
-            print(
-                "Error: the `sort' parameter given to get_all_achievements_sorted"
-                " isn't recognised")
-            return
-        while page_number <= 3:  # TODO: Warning: This number might need to change
-            response = self.api_get("/v2/cursus/" + str(cursus_id)
-                                       + "/achievements?page[size]=100"
-                                         "&page[number]=" + str(page_number)
-                                       + "&sort=" + str(sort), "GET")
-            ret = json.loads(response.content)
-            i = 0
-            while i < len(ret):
-                achievements.append(ret[i])
-                i += 1
-            page_number = page_number + 1
-        return achievements
-
-    def paginated(self, page_number: int,
-                  page_size: int):
-        achievements = []
-        response = self.api_get("/v2/achievements?page[size]="
-                                   + str(page_size) + "&page[number]="
-                                   + str(page_number), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        return achievements
-
-    def campus_paginated(self, page_number: int, page_size: int,
-                         campus_id: int):
-        achievements = []
-        response = self.api_get("/v2/campus/" + str(campus_id)
-                                   + "/achievements?page[size]=" + str(
-            page_size)
-                                   + "&page[number]=" + str(page_number), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
-        return achievements
-
-    def cursus_paginated(self, page_number: int, page_size: int,
-                         cursus_id: int):
-        achievements = []
-        response = self.api_get("/v2/cursus/" + str(cursus_id)
-                                   + "/achievements?page[size]=" + str(
-            page_size)
-                                   + "&page[number]=" + str(page_number), "GET")
-        ret = json.loads(response.content)
-        i = 0
-        while i < len(ret):
-            achievements.append(ret[i])
-            i += 1
+        :param campus_id: The campus ID you want your achievements from
+        :param options: The kwargs options that can be passed paginate/sort/filter/range the achievements
+        :return: Returns a json list containing the requested achievements
+        """
+        args = Args()
+        options["rules"] = self.rules
+        if args.hydrate_values(options) is False:
+            raise ValueError("Options couldn't be extracted")
+        achievements = self.api_get("/v2/campus/" + str(campus_id) + "/achievements", args, "GET")
+        if options.get("pretty", False):
+            return json.dumps(achievements, indent=4, sort_keys=True)
         return achievements

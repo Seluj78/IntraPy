@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 old=$(git tag | awk '/./{line=$0} END{print line}')
 
@@ -13,27 +13,31 @@ fi
 echo "The old version was: $old"
 
 echo "You want to update to $1"
-read -p "Are you sure that is the right version number? " -n 1 -r # TODO: Add a check to be sure that $1 is formatted a X.Y.Z
+ # @todo Add a check to be sure that $1 is formatted a X.Y.Z in update.sh
+read -p "Are you sure that is the right version number? " -n 1 -r
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 
-if [[ ! grep -q "$1" setup.py && echo $? ]] #ERROR HERE
+if [[ ! $(grep -q "$1" setup.py && echo $?) ]]
 then
-    sed -i '' 's/'$old'/'$1'/g' setup.py
-    echo "Error: $1 not found in setup.py. I just replaced it, please commit and push then start this script again" # TODO: Auto commit/push
+	echo $1
+    sed -i '' 's/'"$old"'/'"$1"'/g' setup.py
+    # @todo Auto commit/push in update.sh
+    echo "Error: $1 not found in setup.py. I just replaced it, please commit and push then start this script again"
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 echo
-if [[ ! grep -q "$1" IntraPy/__init__.py && echo $? ]] #ERROR HERE
+if [[ ! $(grep -q "$1" IntraPy/__init__.py && echo $?) ]]
 then
-    sed -i '' 's/'$old'/'$1'/g' IntraPy/__init__.py
-    echo "Error: $1 not found in IntraPy/__init__.py. I just replaced it, please commit and push then start this script again" # TODO: Auto commit/push
+    sed -i '' 's/'"$old"'/'"$1"'/g' IntraPy/__init__.py
+    echo "Error: $1 not found in IntraPy/__init__.py. I just replaced it, please commit and push then start this script again"
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 
-echo "\n\nDid you commit and pushed your last changes ? The last commit found is:" # TODO: Check if commit is pushed
+# @todo: Auto check if pushed in update.sh
+echo "\n\nDid you commit and pushed your last changes ? The last commit found is:"
 git log | head -n 5
 read -p "Is that ok? " -n 1 -r
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -56,7 +60,7 @@ fi
 last_commit_message=$(git log | head -n 5 | tail -n 1 | awk '$1=$1')
 
 read -p "Do you want to use the last commit message ?" -n 1 -r
-if [[ ! $REPLY =~ ^[Yy]$ ]]
+if [[ $REPLY =~ ^[Yy]$ ]]
 then
     git tag $1 -m $last_commit_message
 else
@@ -64,6 +68,9 @@ else
     read user_commit_message
     git tag $1 $user_commit_message
 fi
+
+# @todo Darwin-Linux compatibility
+# @body The pythonic way to push into PyPi is different between macosX and Linux.
 
 git push --tags origin master
 python setup.py register sdist upload

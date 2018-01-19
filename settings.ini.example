@@ -1,0 +1,4 @@
+[settings]
+APP_UID=8ngp6jutwr7ge667eqsnqqacppk7wkv2v6hk7rdtvbtzfu82krdeakg3x4rvcra3
+APP_SECRET=m5ynvgudum3cmmxksxpkmw3cz96mabfpr9wddujbnwksu3jgqjqa5cux4z6hys2a
+TOKEN_FILE=.app_token
