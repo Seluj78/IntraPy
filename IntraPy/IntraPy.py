@@ -143,6 +143,10 @@ class IntraPy:
             args.from_page += 1
         return result
 
+
+    """
+    @todo Add pretty option on api_get_single
+    """
     def api_get_single(self, uri: str, methods="GET"):
         """
         This function will handle all the API requests that send a single json response back.
