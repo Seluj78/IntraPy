@@ -127,12 +127,12 @@ class IntraPy:
         h = {'Authorization': 'Bearer ' + self.app_token}
         while args.from_page <= args.to_page:
             response = requests.request(methods, "https://api.intra.42.fr" + str(uri) + self.get_changeable_parameters(args) + fixed_parameters, headers=h, allow_redirects=False)
-            try:
-                if response.json()['error'] == "Not authorized":
-                    self.app_token = IntraPy.check_app_token(self)
-                    return IntraPy.api_get(self, uri, args, methods)
-            except:
-                pass
+            if response.status_code == 401:
+                self.app_token = IntraPy.check_app_token(self)
+                return IntraPy.api_get(self, uri, args, methods)
+            elif response.status_code == 403:
+                time.sleep(1)
+                continue
             ret = json.loads(response.content)
             if not ret:
                 break
@@ -155,15 +155,15 @@ class IntraPy:
         :return: Returns the response object returned by requests.request()
         """
         h = {'Authorization': 'Bearer ' + self.app_token}
-        r = requests.request(methods, "https://api.intra.42.fr" +
+        response = requests.request(methods, "https://api.intra.42.fr" +
                              uri, headers=h, allow_redirects=False)
-        try:
-            if r.json()['error'] == "Not authorized":
-                self.app_token = IntraPy.check_app_token(self)
-                return IntraPy.api_get_single(self, uri, methods)
-        except:
-            pass
-        return r
+        if response.status_code == 401:
+            self.app_token = IntraPy.check_app_token(self)
+            return IntraPy.api_get_single(self, uri, methods)
+        elif response.status_code == 403:
+            time.sleep(1)
+            return self.api_get_single(uri, methods)
+        return response
 
     def get_changeable_parameters(self, args):
         """
