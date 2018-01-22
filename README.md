@@ -3,6 +3,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/Seluj78/IntraPy.svg)](https://github.com/Seluj78/IntraPy/commits/master)
 [![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/w/Seluj78/IntraPy.svg)](https://github.com/Seluj78/IntraPy/commits/master)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![codecov](https://codecov.io/gh/Seluj78/IntraPy/branch/master/graph/badge.svg)](https://codecov.io/gh/Seluj78/IntraPy)
 
 ### Description
 A Python Library to use easily the 42 API
