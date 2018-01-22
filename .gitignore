@@ -106,3 +106,4 @@ ENV/
 settings.ini
 MANIFEST
 example.py
+nosetests

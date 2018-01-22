@@ -131,7 +131,7 @@ class IntraPy:
                 self.app_token = IntraPy.check_app_token(self)
                 return IntraPy.api_get(self, uri, args, methods)
             elif response.status_code == 403:
-                time.sleep(1)
+                time.sleep(int(response.headers["Retry-After"]))
                 continue
             ret = json.loads(response.content)
             if not ret:
@@ -161,7 +161,7 @@ class IntraPy:
             self.app_token = IntraPy.check_app_token(self)
             return IntraPy.api_get_single(self, uri, methods)
         elif response.status_code == 403:
-            time.sleep(1)
+            time.sleep(int(response.headers["Retry-After"]))
             return self.api_get_single(uri, methods)
         return response
 
