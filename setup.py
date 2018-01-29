@@ -13,6 +13,7 @@ setup(
     'json',
     'requests',
     'python-decouple',
+    'requests-cache',
   ],
   classifiers=[],
 )

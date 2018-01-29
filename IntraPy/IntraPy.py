@@ -20,7 +20,8 @@ import os
 import json
 import time
 import requests
-from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE, CACHE
+import requests_cache
+from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE, CACHE, DBNAME
 
 
 class IntraPy:
@@ -39,10 +40,15 @@ class IntraPy:
             raise EnvironmentError("TOKEN_FILE wasn't found in your settings.ini file.")
         if CACHE == "None":
             print("CACHE variable not found or set to None. No cache will be used")
+        if DBNAME == None:
+            raise EnvironmentError("DBNAME wasn't found in your settings.ini file.")
         self.app_secret = APP_SECRET
         self.app_uid = APP_UID
         self.token_file = TOKEN_FILE
         self.cache = CACHE
+        self.db_name = DBNAME
+        if self.cache == "rcache":
+            requests_cache.install_cache(self.db_name, backend='sqlite', expire_after=180)
         self.app_token = IntraPy.check_app_token(self)
 
     def api_request_new_token(self):
@@ -53,7 +59,11 @@ class IntraPy:
         """
         d = {'grant_type': 'client_credentials',
              'client_id': self.app_uid, 'client_secret': self.app_secret}
-        r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
+        if self.cache == "rcache":
+            with requests_cache.disabled():
+                r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
+        else:
+            r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
         print("New access token requested")
         print(r.json()['access_token'])
         with open(self.token_file, "w") as file:
@@ -69,8 +79,13 @@ class IntraPy:
         """
         self.app_token = IntraPy.get_token_from_file(self)
         h = {'Authorization': 'Bearer ' + self.app_token}
-        r = requests.request("GET",
-                             "https://api.intra.42.fr" + "/oauth/token/info", headers=h, allow_redirects=False)
+        if self.cache == "rcache":
+            with requests_cache.disabled():
+                r = requests.request("GET", "https://api.intra.42.fr" + "/oauth/token/info", headers=h, allow_redirects=False)
+        else:
+            r = requests.request("GET", "https://api.intra.42.fr" + "/oauth/token/info", headers=h, allow_redirects=False)
+
+
         try:
             if r.json()['error'] == "invalid_request":
                 return False
@@ -204,7 +219,11 @@ class IntraPy:
 
         :return: Returns the uid in a string form
         """
-        response = self.api_get_single("/oauth/token/info")
+        if self.cache == "rcache":
+            with requests_cache.disabled():
+                response = self.api_get_single("/oauth/token/info")
+        else:
+            response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return str(ret["application"]["uid"])
 
@@ -214,7 +233,11 @@ class IntraPy:
 
         :return: Return the time in seconds of when the token will expire
         """
-        response = self.api_get_single("/oauth/token/info")
+        if self.cache == "rcache":
+            with requests_cache.disabled():
+                response = self.api_get_single("/oauth/token/info")
+        else:
+            response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return str(ret["expires_in_seconds"])
 
@@ -224,7 +247,11 @@ class IntraPy:
 
         :return: Returns a string formated in h:m:s
         """
-        response = self.api_get_single("/oauth/token/info")
+        if self.cache == "rcache":
+            with requests_cache.disabled():
+                response = self.api_get_single("/oauth/token/info")
+        else:
+            response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         m, s = divmod(ret["expires_in_seconds"], 60)
         h, m = divmod(m, 60)
@@ -236,7 +263,11 @@ class IntraPy:
 
         :return: Returns a string containing the epoch creation time
         """
-        response = self.api_get_single("/oauth/token/info")
+        if self.cache == "rcache":
+            with requests_cache.disabled():
+                response = self.api_get_single("/oauth/token/info")
+        else:
+            response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return str(ret["created_at"])
 
@@ -246,6 +277,10 @@ class IntraPy:
 
         :return: It will return a string in form of `YYYY-MM-DD hh-mm-ss`
         """
-        response = self.api_get_single("/oauth/token/info")
+        if self.cache == "rcache":
+            with requests_cache.disabled():
+                response = self.api_get_single("/oauth/token/info")
+        else:
+            response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ret["created_at"])))

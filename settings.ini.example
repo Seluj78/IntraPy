@@ -4,3 +4,4 @@ APP_SECRET=m5ynvgudum3cmmxksxpkmw3cz96mabfpr9wddujbnwksu3jgqjqa5cux4z6hys2a
 TOKEN_FILE=.app_token
 CACHE=None
 ; None for no caching (or remove variable), rcache to use request-cache, and sqlite to use sqlite.
+DBNAME=.IntraPy
