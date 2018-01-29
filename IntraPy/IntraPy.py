@@ -20,7 +20,7 @@ import os
 import json
 import time
 import requests
-from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE
+from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE, CACHE
 
 
 class IntraPy:
@@ -37,9 +37,12 @@ class IntraPy:
             raise EnvironmentError("APP_SECRET wasn't found in your settings.ini file.")
         if TOKEN_FILE == "None":
             raise EnvironmentError("TOKEN_FILE wasn't found in your settings.ini file.")
+        if CACHE == "None":
+            print("CACHE variable not found or set to None. No cache will be used")
         self.app_secret = APP_SECRET
         self.app_uid = APP_UID
         self.token_file = TOKEN_FILE
+        self.cache = CACHE
         self.app_token = IntraPy.check_app_token(self)
 
     def api_request_new_token(self):

@@ -27,3 +27,4 @@ from decouple import config
 APP_UID = config('APP_UID', cast=str, default = None)
 APP_SECRET = config('APP_SECRET', cast=str, default=None)
 TOKEN_FILE = config('TOKEN_FILE', cast=str, default=None)
+CACHE = config('CACHE', cast=str, default=None)
