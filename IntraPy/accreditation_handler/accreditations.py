@@ -60,7 +60,7 @@ class Accreditations(IntraPy):
 
         :return: Returns a list in json form containing the requested accreditation
         """
-        response = self.api_get_single("/v2/achievements/" + str(accreditation_id), "GET")
+        response = self.api_get_single("/v2/accreditations/" + str(accreditation_id), "GET")
         accreditation = json.loads(response.content)
         if pretty:
             return json.dumps(accreditation, indent=4, sort_keys=True)

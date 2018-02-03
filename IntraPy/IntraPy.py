@@ -21,7 +21,8 @@ import json
 import time
 import requests
 import requests_cache
-from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE, CACHE, DBNAME
+import sqlite3
+from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE, CACHE_TYPE, DBNAME, TABLE_NAME
 
 
 class IntraPy:
@@ -38,17 +39,23 @@ class IntraPy:
             raise EnvironmentError("APP_SECRET wasn't found in your settings.ini file.")
         if TOKEN_FILE == "None":
             raise EnvironmentError("TOKEN_FILE wasn't found in your settings.ini file.")
-        if CACHE == "None":
-            print("CACHE variable not found or set to None. No cache will be used")
-        if DBNAME == None:
+        if CACHE_TYPE == "None":
+            print("CACHE_TYPE variable not found or set to None. No cache will be used")
+        if DBNAME == "None":
             raise EnvironmentError("DBNAME wasn't found in your settings.ini file.")
+        self.table_name = TABLE_NAME
         self.app_secret = APP_SECRET
         self.app_uid = APP_UID
         self.token_file = TOKEN_FILE
-        self.cache = CACHE
+        self.cache_type = CACHE_TYPE
         self.db_name = DBNAME
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             requests_cache.install_cache(self.db_name, backend='sqlite', expire_after=180)
+        elif self.cache_type == "sqlite":
+            self.connection = sqlite3.connect(self.db_name)
+            self.cursor = self.connection.cursor()
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS ' + self.table_name + ' (url text, endpoint text, response text, last_requested int, expires_after int, expires_at int)')
+            self.connection.commit()
         self.app_token = IntraPy.check_app_token(self)
 
     def api_request_new_token(self):
@@ -59,7 +66,7 @@ class IntraPy:
         """
         d = {'grant_type': 'client_credentials',
              'client_id': self.app_uid, 'client_secret': self.app_secret}
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             with requests_cache.disabled():
                 r = requests.post("https://api.intra.42.fr/oauth/token", data=d)
         else:
@@ -79,7 +86,7 @@ class IntraPy:
         """
         self.app_token = IntraPy.get_token_from_file(self)
         h = {'Authorization': 'Bearer ' + self.app_token}
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             with requests_cache.disabled():
                 r = requests.request("GET", "https://api.intra.42.fr" + "/oauth/token/info", headers=h, allow_redirects=False)
         else:
@@ -173,8 +180,11 @@ class IntraPy:
         :return: Returns the response object returned by requests.request()
         """
         h = {'Authorization': 'Bearer ' + self.app_token}
-        response = requests.request(methods, "https://api.intra.42.fr" +
-                             uri, headers=h, allow_redirects=False)
+        if not self.cache_type == "sqlite":
+            response = requests.request(methods, "https://api.intra.42.fr" + uri, headers=h, allow_redirects=False)
+        else:
+            response = requests.request(methods, "https://api.intra.42.fr" + uri, headers=h, allow_redirects=False)
+            self.cache_response(response, uri)
         if response.status_code == 401:
             self.app_token = IntraPy.check_app_token(self)
             return IntraPy.api_get_single(self, uri, methods)
@@ -182,6 +192,28 @@ class IntraPy:
             time.sleep(int(response.headers["Retry-After"]))
             return self.api_get_single(uri, methods)
         return response
+
+    def cache_response(self, response, uri: str):
+        endpoint = uri.split('?')[0]
+        content = json.dumps(response.content.decode("utf-8"))
+        last_requested = str(round(time.time()))
+        expires_after = self.get_expire_time_seconds(endpoint)
+        expires_at = last_requested + expires_after
+        values = "'" + uri + "', '" + endpoint + "', '" + content + "', " + last_requested + ", " + expires_after + ", " + expires_at
+        self.cursor.execute("INSERT INTO " + self.table_name + " VALUES (" + values + ")")
+        self.connection.commit()
+
+    # @todo: Change the ifs into a dict/list for get_expire_time
+    # @todo: Add /v2/campus and /v2/cursus in get_expire_time
+    def get_expire_time_seconds(self, endpoint: str):
+        if endpoint == "/oauth/token/info":
+            return "1"  # 1 second
+        if endpoint == "/v2/accreditations":
+            return "86400"  # 1 day
+        if endpoint == "/v2/achievements":
+            return "2629746"  # 1 month
+        if endpoint == "/v2/titles":
+            return "2629746"  # 1 month
 
     def get_changeable_parameters(self, args):
         """
@@ -219,7 +251,7 @@ class IntraPy:
 
         :return: Returns the uid in a string form
         """
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             with requests_cache.disabled():
                 response = self.api_get_single("/oauth/token/info")
         else:
@@ -233,7 +265,7 @@ class IntraPy:
 
         :return: Return the time in seconds of when the token will expire
         """
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             with requests_cache.disabled():
                 response = self.api_get_single("/oauth/token/info")
         else:
@@ -247,7 +279,7 @@ class IntraPy:
 
         :return: Returns a string formated in h:m:s
         """
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             with requests_cache.disabled():
                 response = self.api_get_single("/oauth/token/info")
         else:
@@ -263,7 +295,7 @@ class IntraPy:
 
         :return: Returns a string containing the epoch creation time
         """
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             with requests_cache.disabled():
                 response = self.api_get_single("/oauth/token/info")
         else:
@@ -277,7 +309,7 @@ class IntraPy:
 
         :return: It will return a string in form of `YYYY-MM-DD hh-mm-ss`
         """
-        if self.cache == "rcache":
+        if self.cache_type == "rcache":
             with requests_cache.disabled():
                 response = self.api_get_single("/oauth/token/info")
         else:
