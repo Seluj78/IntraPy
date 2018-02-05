@@ -24,7 +24,6 @@ import requests_cache
 import sqlite3
 from IntraPy.config import APP_UID, APP_SECRET, TOKEN_FILE, CACHE_TYPE, DBNAME, TABLE_NAME
 
-
 class IntraPy:
     """
         This is the main class for IntraPy. It contains the app_token handling
@@ -40,15 +39,14 @@ class IntraPy:
         if TOKEN_FILE == "None":
             raise EnvironmentError("TOKEN_FILE wasn't found in your settings.ini file.")
         if CACHE_TYPE == "None":
-            print("CACHE_TYPE variable not found or set to None. No cache will be used")
-        if DBNAME == "None":
-            raise EnvironmentError("DBNAME wasn't found in your settings.ini file.")
+            print("CACHE_TYPE variable not found or set to None. No cache method will be used")
         self.table_name = TABLE_NAME
         self.app_secret = APP_SECRET
         self.app_uid = APP_UID
         self.token_file = TOKEN_FILE
         self.cache_type = CACHE_TYPE
         self.db_name = DBNAME
+        # @todo: Customize the expire_after for rcache
         if self.cache_type == "rcache":
             requests_cache.install_cache(self.db_name, backend='sqlite', expire_after=180)
         elif self.cache_type == "sqlite":
@@ -179,12 +177,17 @@ class IntraPy:
 
         :return: Returns the response object returned by requests.request()
         """
+        response = None
         h = {'Authorization': 'Bearer ' + self.app_token}
-        if not self.cache_type == "sqlite":
+        if self.cache_type == "None":
+            with requests_cache.disabled():
+                response = requests.request(methods, "https://api.intra.42.fr" + uri, headers=h, allow_redirects=False)
+        elif self.cache_type == "sqlite":
+            with requests_cache.disabled():
+                response = requests.request(methods, "https://api.intra.42.fr" + uri, headers=h, allow_redirects=False)
+                self.cache_response(response, uri)
+        elif self.cache_type == "rcache":
             response = requests.request(methods, "https://api.intra.42.fr" + uri, headers=h, allow_redirects=False)
-        else:
-            response = requests.request(methods, "https://api.intra.42.fr" + uri, headers=h, allow_redirects=False)
-            self.cache_response(response, uri)
         if response.status_code == 401:
             self.app_token = IntraPy.check_app_token(self)
             return IntraPy.api_get_single(self, uri, methods)
@@ -251,11 +254,7 @@ class IntraPy:
 
         :return: Returns the uid in a string form
         """
-        if self.cache_type == "rcache":
-            with requests_cache.disabled():
-                response = self.api_get_single("/oauth/token/info")
-        else:
-            response = self.api_get_single("/oauth/token/info")
+        response = self.api_get_single("/oauth/token/info")
         ret = json.loads(response.content)
         return str(ret["application"]["uid"])
 

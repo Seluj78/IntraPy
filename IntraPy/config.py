@@ -24,9 +24,9 @@ from decouple import config
     APP_SECRET: the app secret given by 42
     TOKEN_FILE: The filename you want your token to be stored in
 """
-APP_UID = config('APP_UID', cast=str, default = None)
+APP_UID = config('APP_UID', cast=str, default=None)
 APP_SECRET = config('APP_SECRET', cast=str, default=None)
-TOKEN_FILE = config('TOKEN_FILE', cast=str, default=None)
-CACHE_TYPE = config('CACHE_TYPE', cast=str, default=None)
-DBNAME = config('DBNAME', cast=str, default=None)
+TOKEN_FILE = config('TOKEN_FILE', cast=str, default=".app_token")
+CACHE_TYPE = config('CACHE_TYPE', cast=str, default="None")
+DBNAME = config('DBNAME', cast=str, default="IntraPy.db")
 TABLE_NAME = config('TABLE_NAME', cast=str, default="cache")
